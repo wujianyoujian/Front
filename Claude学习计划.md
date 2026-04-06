@@ -636,3 +636,25 @@ client.messages.create(model="...", tools=[...], messages=[...])
 # 问题诊断
 "以下代码出现 {错误描述}，请：\n1. 分析原因\n2. 提出修复方案\n3. 实现修复\n代码：\n{code}"
 ```
+
+ 一、官方课程（推荐学习顺序）
+
+  课程: 1. Anthropic API Fundamentals
+  内容: API 基础、SDK 使用、参数配置、多模态提示
+  链接: https://github.com/anthropics/courses/tree/master/anthropic_api_fundamentals
+  ────────────────────────────────────────
+  课程: 2. Prompt Engineering Interactive Tutorial
+  内容: 提示词工程技巧，交互式学习
+  链接: https://catalog.us-east-1.prod.workshops.aws/workshops/0644c9e9-5b82-45f2-8835-3b5aa30b1848/en-US
+  ────────────────────────────────────────
+  课程: 3. Real World Prompting
+  内容: 真实场景复杂提示词设计
+  链接: https://github.com/anthropics/courses/tree/master/real_world_prompting
+  ────────────────────────────────────────
+  课程: 4. Prompt Evaluations
+  内容: 提示词质量评估、生产环境测试
+  链接: https://github.com/anthropics/courses/tree/master/prompt_evaluations
+  ────────────────────────────────────────
+  课程: 5. Tool Use
+  内容: 工具调用、函数使用
+  链接: https://github.com/anthropics/courses/tree/master/tool_use
