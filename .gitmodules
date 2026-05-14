@@ -1,0 +1,3 @@
+[submodule "AI/skills"]
+	path = AI/skills
+	url = https://github.com/wujianyoujian/Skills.git
