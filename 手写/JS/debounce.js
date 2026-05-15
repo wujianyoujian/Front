@@ -1,0 +1,27 @@
+function deBounce(fn, { wait = 300, immediate = true }) {
+  let timer = null;
+
+  return function (...args) {
+    const callNow = immediate && !timer;
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      timer = null;
+      if (!immediate) {
+        fn.apply(this, args);
+      }
+    }, wait);
+
+    if (callNow) fn.apply(this, args);
+  };
+}
+
+window.onload = function () {
+  const $btn = document.querySelector("#btn");
+  $btn.addEventListener(
+    "click",
+    deBounce(function () {
+      console.log(123);
+    }, {})
+  );
+};

@@ -1,5 +1,9 @@
 {
   "project": {
     "name": "Front"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File D:/project/Front/.claude/statusline-command.ps1"
   }
 }

@@ -5,7 +5,9 @@
       "WebSearch",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(git clone:*)",
-      "WebFetch(domain:docs.anthropic.com)"
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(git push *)",
+      "PowerShell(Get-ChildItem *)"
     ]
   }
 }
