@@ -25,3 +25,21 @@ window.onload = function () {
     }, {})
   );
 };
+
+function deBounce(fn, { wait = 300, immediate = true }) {
+  let timer = null;
+
+  return function (...args) {
+    const canNow = immediate && !timer;
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      timer = null;
+      if (!immediate) {
+        fn.apply(this, args);
+      }
+    }, wait);
+
+    if (canNow) fn.apply(this, args);
+  };
+}

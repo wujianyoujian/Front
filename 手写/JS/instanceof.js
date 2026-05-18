@@ -17,14 +17,44 @@
 //   return false;
 // }
 
-function myInstanceof(obj, constructor) {
-  if (obj == null || (typeof obj !== "object" && typeof obj !== "function")) {
+// function myInstanceof(obj, constructor) {
+//   if (obj == null || (typeof obj !== "object" && typeof obj !== "function")) {
+//     return false;
+//   }
+//   let proto = Object.getPrototypeOf(obj);
+
+//   while (proto !== null) {
+//     if (proto === constructor.prototype) {
+//       return true;
+//     }
+//     proto = Object.getPrototypeOf(proto);
+//   }
+//   return false;
+// }
+
+// function myInstanceof(obj, constructor) {
+//   if (obj == null || (typeof obj !== "function" && typeof obj !== "object")) {
+//     return false;
+//   }
+
+//   let proto = Object.getPrototypeOf(obj);
+
+//   while (proto !== null) {
+//     if (proto === constructor.prototype) {
+//       return true;
+//     }
+//     proto = Object.getPrototypeOf(proto);
+//   }
+// }
+
+function myInstanceof(obj, construcotor) {
+  if (obj == null || (typeof obj !== "function" && typeof obj !== "object")) {
     return false;
   }
-  let proto = Object.getPrototypeOf(obj);
 
+  let proto = Object.getPrototypeOf(obj);
   while (proto !== null) {
-    if (proto === constructor.prototype) {
+    if (proto === construcotor.prototype) {
       return true;
     }
     proto = Object.getPrototypeOf(proto);

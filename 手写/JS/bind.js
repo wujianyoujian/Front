@@ -15,3 +15,13 @@ Function.prototype.myBind = function (context, ...preArgs) {
 
   return bound;
 };
+
+Function.prototype.myBind = function (context, ...preArgs) {
+  const fn = this;
+  function bound(...args) {
+    return fn.apply(this instanceof bound ? this : context, [...args, ...preArgs]);
+  }
+
+  bound.prototype = Object.create(fn.prototype);
+  return bound;
+};

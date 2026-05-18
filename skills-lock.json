@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "interview": {
+      "source": "wujianyoujian/Skills",
+      "sourceType": "github",
+      "skillPath": "interview/SKILL.md",
+      "computedHash": "0ae81359e4a1dd28ea2b7320341c51856c5c2db00315eab1ea33d3137c0d728b"
+    }
+  }
+}

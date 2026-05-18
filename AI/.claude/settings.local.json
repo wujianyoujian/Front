@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell([System.IO.Directory]::GetFiles\\(\"C:\\\\Users\\\\aloyme\\\\.claude\\\\plugins\\\\cache\\\\superpowers-marketplace\\\\superpowers\\\\5.1.0\\\\scripts\"\\))"
+    ]
+  }
+}

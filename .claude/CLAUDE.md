@@ -49,10 +49,6 @@ pnpm test
 pnpm format
 ```
 
-## 自定义命令
-
-- `/interview "topic"` — 读取本地 `{topic}.md` 题库，从未完成题目开始，以 P10 前端架构师视角逐题提问、评审、打勾记录。详见 `.claude/commands/interview.md`
-
 ## 行为规范
 
 - 只回答计算机知识、技术相关的问题，其他非技术问题一律不回答。

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <template id="card-template">
+      <style>
+        .card {
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 16px;
+          max-width: 300px;
+        }
+        .title {
+          font-size: 18px;
+          font-weight: bold;
+          color: #333;
+        }
+        .content {
+          color: #666;
+          margin-top: 8px;
+        }
+      </style>
+      <div class="card">
+        <div class="title"></div>
+        <div class="content"></div>
+      </div>
+    </template>
+
+    <info-card title="标题" content="这是内容描述"></info-card>
+    <info-card title="第二张卡片" content="Shadow DOM 隔离样式"></info-card>
+
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>

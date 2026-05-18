@@ -51,45 +51,16 @@ function flatten(obj: any, path: string[] = [], result: any = {}) {
 const result = flatten(obj);
 console.log(result);
 
-// ============ 改进版本 ============
-
-type Primitive = string | number | boolean | null | undefined;
-
-type FlattenedResult = Record<string, Primitive>;
-
-function flattenImproved(
-  obj: Record<string, unknown>,
-  path: string[] = [],
-  result: FlattenedResult = {}
-): FlattenedResult {
+function flatten1(obj, prefix = "", result = {}) {
   for (const key in obj) {
-    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+    const fullKey = prefix ? `${prefix}.${key}` : key;
+    const val = obj[key];
 
-    const value = obj[key];
-    path.push(key);
-
-    if (value === null || value === undefined) {
-      result[path.join(".")] = value;
-    } else if (Array.isArray(value)) {
-      value.forEach((item, index) => {
-        path.push(String(index));
-        if (item !== null && typeof item === "object") {
-          flattenImproved(item as Record<string, unknown>, path, result);
-        } else {
-          result[path.join(".")] = item as Primitive;
-        }
-        path.pop();
-      });
-    } else if (typeof value === "object") {
-      flattenImproved(value as Record<string, unknown>, path, result);
+    if (val !== null && typeof val === "object") {
+      flatten(val, fullKey, result);
     } else {
-      result[path.join(".")] = value as Primitive;
+      result[fullKey] = val;
     }
-
-    path.pop();
   }
   return result;
 }
-
-const result2 = flattenImproved(obj);
-console.log(result2);
