@@ -1,0 +1,35 @@
+.calendar {
+  width: 300px;
+  height: 250px;
+  padding: 10px;
+  border: 1px solid #aaa;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.empty,
+.day {
+  width: calc(100% / 7);
+  line-height: 30px;
+  text-align: center;
+}
+
+.day:hover {
+  cursor: pointer;
+  background-color: blue;
+}
+
+.day.selected {
+  cursor: pointer;
+  background-color: #ccc;
+}

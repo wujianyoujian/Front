@@ -30,3 +30,41 @@ function curry(fn) {
     };
   };
 }
+
+
+
+
+
+
+// 1. 延迟加载
+// 2. 合并参数
+
+function curry(fn) {
+  return function curried(...args) {
+    if (fn.length === args.length) {
+      return fn.apply(this, args)
+    }
+    return function (...args1) {
+      return curried.apply(this, args1.concat(args))
+    }
+  }
+}
+
+
+{
+  // 多个参数唯一化
+  // 延迟加载
+  function curry(fn) {
+    return function curried(...args) {
+      if (fn.length === args.length) {
+        return fn.apply(this, args)
+      }
+      return function (...args1) {
+        return curried.apply(this, args.concat(args1))
+      }
+    }
+  }
+
+  let fn = curry((x, y, z) => x + y + z)
+  console.log(fn(1)(2)(3))
+}

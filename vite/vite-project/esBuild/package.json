@@ -1,0 +1,19 @@
+{
+  "name": "esBuild",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild src/index.jsx --bundle --outfile=dist/bundle.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.31.0",
+  "dependencies": {
+    "esbuild": "0.14.18",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

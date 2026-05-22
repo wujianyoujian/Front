@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Worker 案例演示</title>
+  <link rel="stylesheet" href="shell.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <h1>Service Worker 案例演示</h1>
+      <span id="network-status" class="status-badge">在线</span>
+    </header>
+
+    <nav class="tab-bar">
+      <button class="tab active" data-tab="news">新闻列表（Network First）</button>
+      <button class="tab" data-tab="avatar">用户头像（SWR）</button>
+      <button class="tab" data-tab="static">静态资源（Cache First）</button>
+    </nav>
+
+    <main id="main-content">
+      <!-- 新闻列表 -->
+      <section id="tab-news" class="tab-panel active">
+        <h2>新闻列表</h2>
+        <p class="hint">Network First：优先网络，断网时展示缓存数据</p>
+        <div id="cache-tip" class="cache-tip hidden">当前展示的是缓存数据，请检查网络</div>
+        <button onclick="loadNews()">加载新闻</button>
+        <ul id="news-list"></ul>
+      </section>
+
+      <!-- 用户头像 -->
+      <section id="tab-avatar" class="tab-panel hidden">
+        <h2>用户信息</h2>
+        <p class="hint">Stale While Revalidate：立即显示缓存，后台更新</p>
+        <button onclick="loadUser()">加载用户信息</button>
+        <div id="user-info"></div>
+      </section>
+
+      <!-- 静态资源 -->
+      <section id="tab-static" class="tab-panel hidden">
+        <h2>静态资源缓存</h2>
+        <p class="hint">Cache First：JS/CSS/图片优先读缓存，极速响应</p>
+        <div id="cache-status"></div>
+        <button onclick="checkCaches()">查看当前缓存列表</button>
+        <ul id="cache-list"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>打开 DevTools → Application → Service Workers / Cache Storage 查看缓存</p>
+    </footer>
+  </div>
+
+  <script src="shell.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

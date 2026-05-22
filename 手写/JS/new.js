@@ -15,3 +15,10 @@ function myNew(constructor, ...args) {
   const result = constructor.apply(obj, args);
   return result instanceof Object ? result : obj;
 }
+
+
+function myNew1(constructor, ...args) {
+  const obj = Object.create(constructor.prototype);
+  const result = constructor.apply(obj, args);
+  return result instanceof Object ? result : obj
+}

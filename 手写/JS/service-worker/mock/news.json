@@ -1,0 +1,9 @@
+{
+  "list": [
+    { "title": "Service Worker 让 PWA 应用实现真正离线访问", "source": "InfoQ", "time": "2026-05-19" },
+    { "title": "Chrome 124 新增 Cache API 配额提醒功能", "source": "Google Blog", "time": "2026-05-18" },
+    { "title": "Workbox 7.0 发布，Service Worker 工具链升级", "source": "GitHub", "time": "2026-05-17" },
+    { "title": "浏览器缓存策略最佳实践：从 HTTP 缓存到 SW 缓存", "source": "MDN", "time": "2026-05-16" },
+    { "title": "Network First vs Cache First：如何选择缓存策略？", "source": "web.dev", "time": "2026-05-15" }
+  ]
+}

@@ -9,5 +9,8 @@
       "Bash(git push *)",
       "PowerShell(Get-ChildItem *)"
     ]
+  },
+  "skillOverrides": {
+    "sigma": "off"
   }
 }

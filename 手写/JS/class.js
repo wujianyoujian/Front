@@ -8,7 +8,7 @@
     return this.name;
   };
 
-  function Dog() {}
+  function Dog() { }
 
   Dog.prototype = new Animal("animal");
 
@@ -65,4 +65,46 @@
   dog1.color.push("blue");
   console.log(dog1.color);
   console.log(dog2.color);
+}
+
+
+{
+
+  function Animal(name) {
+    this.name = name
+  }
+
+  Animal.prototype.sayName = function () {
+    console.log(this.name)
+  }
+
+  function Dog(name, age) {
+    Animal.call(this, name);
+    this.age = age;
+  }
+
+  Dog.prototype = Object.create(Animal.prototype);
+  Dog.prototype.constructor = Dog
+
+  let d1 = new Dog("李财", 12);
+  console.log(d1.sayName())
+}
+
+
+{
+  function Parent(name) {
+    this.name = name;
+  }
+
+  Parent.prototype.printName = function () {
+    console.log(this.name)
+  }
+
+
+  function Child(name) {
+    parent.call(this, name)
+  }
+
+  Child.prototype = Object.create(Parent.prototype);
+  Child.prototype.constructor = Child;
 }

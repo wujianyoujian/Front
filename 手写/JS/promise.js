@@ -289,8 +289,8 @@ class MyPromise1 {
       typeof onRejected === "function"
         ? onRejected
         : (v) => {
-            throw v;
-          };
+          throw v;
+        };
 
     return new MyPromise1((resolve, reject) => {
       const handle = (fn, val) => {
@@ -373,3 +373,112 @@ const p = new MyPromise1((resolve, reject) => {
 p.then((res) => {
   console.log(res);
 });
+
+
+{
+  class Mypromise {
+    constructor(executor) {
+      this.value = undefined;
+      this.reason = undefined;
+      this.state = 'pending';
+
+      this.onFulfilledCallbacks = []
+      this.onRejectedCallbacks = []
+
+
+      const resolve = (val) => {
+        if (this.state !== 'pending') {
+          this.state = 'fulfilled';
+          this.value = val;
+
+          this.onFulfilledCallbacks.forEach(fn => fn())
+        }
+      }
+
+      const reject = (reason) => {
+        if (this.state !== 'pending') {
+          this.state = 'rejected';
+          this.value = reason;
+
+          this.onRejectedCallbacks.forEach((fn) => fn())
+        }
+      }
+
+      try {
+        executor(resolve, reject)
+      } catch (error) {
+        reject(error)
+      }
+    }
+
+    then(onFulfilled, onRejected) {
+      onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v;
+      onRejected = typeof onRejected === 'function' ? onRejected : r => { throw new Error(r) };
+
+      return new MyPromise((resolve, reject) => {
+
+        const handle = (fn, val) => {
+          queueMicrotask(() => {
+            try {
+              const result = fn(val)
+              return typeof result.then === 'function' ? result.then(resolve, reject) : resolve(result)
+            } catch (error) {
+              reject(error)
+            }
+          });
+        }
+
+
+        if (this.state === 'fulfilled') {
+          handle(onFulfilled, this.value)
+        }
+
+        if (this.state === 'rejected') {
+          handle(onRejected, this.reason)
+        }
+
+        if (this.state === 'pending') {
+          this.onRejectedCallbacks.push(() => handle(onFulfilled, this.value))
+          this.onRejectedCallbacks.push(() => handle(onRejected, this.reason))
+        }
+
+      });
+    }
+
+    static resolve(val) {
+      if (val instanceof MyPromise) return val;
+      return new MyPromise((resolve) => resolve(val));
+    }
+
+    static reject(res) {
+      return new MyPromise((_, reject) => reject(res))
+    }
+
+    static catch(fn) {
+      return this.then(_, fn)
+    }
+
+    finally(fn) {
+      return this.then(
+        (val) => {
+          return MyPromise.resolve(fn()).then(() => val)
+        },
+        (reason) => {
+          return MyPromise.resolve(fn()).then(() => { throw reason })
+        }
+      )
+    }
+  }
+
+  const p = new MyPromise((resolve) => {
+    setTimeout(() => {
+      resolve(12);
+    });
+  });
+
+  p.then((val) => {
+    console.log(val)
+  })
+  console.log('同步');
+
+}

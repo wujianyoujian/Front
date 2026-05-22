@@ -1,5 +1,9 @@
 {
   "permissions": {
-    "allow": ["Bash(git config:*)", "Bash(npx husky:*)"]
+    "allow": [
+      "Bash(git config:*)",
+      "Bash(npx husky:*)",
+      "Bash(pnpm i *)"
+    ]
   }
 }

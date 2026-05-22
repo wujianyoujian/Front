@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>React 合成事件 vs 原生事件</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #log {
+      margin-top: 20px;
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    #log p {
+      margin: 4px 0;
+    }
+
+    .clear-btn {
+      margin-top: 10px;
+      padding: 4px 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>React 合成事件 vs 原生事件执行顺序</h2>
+  <div id="root"></div>
+
+  <div id="log">
+    <p>点击按钮查看输出顺序...</p>
+  </div>
+  <button class="clear-btn" onclick="clearLog()">清空日志</button>
+
+  <!-- React 18 CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    const logEl = document.getElementById('log')
+    let logCount = 0
+
+    function log(msg) {
+      logCount++
+      const p = document.createElement('p')
+      p.textContent = `${logCount}. ${msg}`
+      if (logCount === 1) logEl.innerHTML = ''
+      logEl.appendChild(p)
+      console.log(msg)
+    }
+
+    function clearLog() {
+      logEl.innerHTML = '<p>点击按钮查看输出顺序...</p>'
+      logCount = 0
+    }
+  </script>
+
+  <script type="text/babel">
+    function App() {
+      return (
+        <div
+          id="outer"
+          onClick={() => log('React 合成事件 - outer div')}
+        >
+          {/* 案例1：正常顺序 */}
+          <section>
+            <h3>案例1：正常顺序（无阻止冒泡）</h3>
+            <button
+              id="btn1"
+              onClick={() => log('React 合成事件 - btn1')}
+            >
+              点击我（看顺序）
+            </button>
+          </section>
+
+          {/* 案例2：btn 上的原生事件 stopPropagation，能阻止 React 合成事件 */}
+          <section style={{ marginTop: '20px' }}>
+            <h3>案例2：btn 上原生 stopPropagation → 阻止 React 合成事件</h3>
+            <button
+              id="btn2"
+              onClick={() => log('React 合成事件 - btn2（你看不到这行）')}
+            >
+              点击我（原生 btn 阻止冒泡）
+            </button>
+          </section>
+
+          {/* 案例3：document 上的原生事件 stopPropagation，阻止不了 React */}
+          <section style={{ marginTop: '20px' }}>
+            <h3>案例3：document 上原生 stopPropagation → 阻止不了 React 合成事件</h3>
+            <button
+              id="btn3"
+              onClick={() => log('React 合成事件 - btn3（能看到，document 阻止不了我）')}
+            >
+              点击我（document 阻止冒泡）
+            </button>
+          </section>
+        </div>
+      )
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+
+    // 案例1：btn1 上绑原生事件（不阻止冒泡）
+    document.getElementById('btn1').addEventListener('click', () => {
+      log('原生事件 - btn1（冒泡前）')
+    })
+
+    // root 上绑原生事件
+    document.getElementById('root').addEventListener('click', () => {
+      log('原生事件 - root')
+    })
+
+    // document 上绑原生事件
+    document.addEventListener('click', () => {
+      log('原生事件 - document')
+    })
+
+    // 案例2：btn2 上的原生事件 stopPropagation
+    // 冒泡在 btn 处停止，root 收不到，React 合成事件不触发
+    document.getElementById('btn2').addEventListener('click', (e) => {
+      log('原生事件 - btn2，调用 stopPropagation()')
+      e.stopPropagation()
+      log('冒泡已停止，React 合成事件不会触发')
+    })
+
+    // 案例3：document 上的原生事件 stopPropagation
+    // React 已经在 root 处理完了，document 这里阻止不了任何东西
+    document.getElementById('btn3').addEventListener('click', () => {
+      log('原生事件 - btn3（不阻止，让它冒泡到 root）')
+    })
+
+    // 注意：这个 document 监听会影响所有按钮，实际演示时只看 btn3 的日志
+    // document 上的 stopPropagation 对已经执行的 React 合成事件无效
+  </script>
+</body>
+
+</html>
