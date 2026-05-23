@@ -9,7 +9,6 @@ import { Form, Input } from "antd";
 import Button from "@arco-design/web-react/es/Button";
 import Space from "@arco-design/web-react/es/Space";
 import { Suspense, lazy } from "react";
-import {} from ".";
 
 const CalendarTest = lazy(() => import("../../components/ui/Calendar"));
 
