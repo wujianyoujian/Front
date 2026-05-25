@@ -1,5 +1,5 @@
 const isEvent = key => key.startsWith("on")
-const isProperty = key => key !== "children" && !isEvent(key)
+const isProperty = key => key !== "children" && key !== "ref" && !isEvent(key)
 const isNew = (prev, next) => key => prev[key] !== next[key]
 const isGone = (prev, next) => key => !(key in next)
 

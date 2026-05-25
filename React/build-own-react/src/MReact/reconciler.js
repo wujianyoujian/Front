@@ -4,6 +4,11 @@ let nextUnitOfWork = null
 let currentRoot = null
 let wipRoot = null
 let deletions = null
+// hooks state — shared with hooks.js via module-level vars
+let wipFiber = null
+let workInProgressHook = null
+let currentHook = null
+// let hookIndex = null
 
 function render(element, container) {
   wipRoot = {
@@ -34,20 +39,37 @@ requestIdleCallback(workLoop)
 function commitRoot() {
   deletions.forEach(commitWork)
   commitWork(wipRoot.child)
-  commitEffect(wipRoot.child)
+  commitLayoutEffect(wipRoot.child)
   currentRoot = wipRoot
   wipRoot = null
+  requestIdleCallback(() => commitEffect(currentRoot.child))
 }
 
 function commitEffect(fiber) {
   if (!fiber) return
-  if (fiber.hooks) {
-    fiber.hooks.forEach(hook => {
-      if (hook.tag === 'EFFECT') {
-        if (hook.cleanup) hook.cleanup()
-        hook.cleanup = hook.fn()
-      }
-    })
+
+  let hook = fiber.memoizedState
+  while(hook) {
+    if (hook.tag === 'EFFECT') {
+      if (hook.cleanup) hook.cleanup()
+      hook.cleanup = hook.fn();
+    }
+    hook = hook.next
+  }
+  commitEffect(fiber.child)
+  commitEffect(fiber.sibling)
+}
+
+function commitLayoutEffect(fiber) {
+  if (!fiber) return
+
+  let hook = fiber.memoizedState
+  while(hook) {
+    if (hook.tag === 'LAYOUTEFFECT') {
+      if (hook.cleanup) hook.cleanup()
+      hook.cleanup = hook.fn();
+    }
+    hook = hook.next
   }
   commitEffect(fiber.child)
   commitEffect(fiber.sibling)
@@ -64,8 +86,14 @@ function commitWork(fiber) {
 
   if (fiber.effectTag === "PLACEMENT" && fiber.dom != null) {
     domParent.appendChild(fiber.dom)
+    if (fiber.props.ref) {
+      fiber.props.ref.current = fiber.dom
+    }
   } else if (fiber.effectTag === "UPDATE" && fiber.dom != null) {
     updateDom(fiber.dom, fiber.alternate.props, fiber.props)
+    if (fiber.props.ref) {
+      fiber.props.ref.current = fiber.dom
+    }
   } else if (fiber.effectTag === "DELETION") {
     commitDeletion(fiber, domParent)
   }
@@ -80,10 +108,10 @@ function commitDeletion(fiber, domParent) {
   } else {
     commitDeletion(fiber.child, domParent)
   }
-  if (fiber.hooks) {
-    fiber.hooks.forEach((hook) => {
-        hook.cleanup && hook.cleanup()
-    })
+  let hook = fiber.memoizedState
+  while(hook) {
+    if (hook.cleanup) hook.cleanup()
+    hook = hook.next
   }
 }
 
@@ -114,8 +142,9 @@ function updateHostComponent(fiber) {
 
 function updateFunctionComponent(fiber) {
   wipFiber = fiber
-  hookIndex = 0
-  wipFiber.hooks = []
+  wipFiber.memoizedState = null // 链表头，初始为空
+  workInProgressHook = null;
+  currentHook = fiber.alternate?.memoizedState ?? null;
   const children = [fiber.type(fiber.props)]
   reconcileChildren(fiber, children)
 }
@@ -169,13 +198,11 @@ function reconcileChildren(wipFiber, elements) {
   }
 }
 
-// hooks state — shared with hooks.js via module-level vars
-let wipFiber = null
-let hookIndex = null
-
 function getWipFiber() { return wipFiber }
-function getHookIndex() { return hookIndex }
-function setHookIndex(i) { hookIndex = i }
+function getWorkInProgressHook() { return workInProgressHook }
+function setWorkInProgressHook(hook) { workInProgressHook = hook }
+function getCurrentHook() { return currentHook }
+function setCurrentHook(hook) { currentHook = hook }
 function getWipRoot() { return wipRoot }
 function setWipRoot(root) { wipRoot = root }
 function getCurrentRoot() { return currentRoot }
@@ -185,8 +212,10 @@ function setDeletions(d) { deletions = d }
 export {
   render,
   getWipFiber,
-  getHookIndex,
-  setHookIndex,
+  getWorkInProgressHook,
+  setWorkInProgressHook,
+  getCurrentHook,
+  setCurrentHook,
   getWipRoot,
   setWipRoot,
   getCurrentRoot,

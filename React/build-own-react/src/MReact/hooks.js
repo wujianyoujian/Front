@@ -1,25 +1,22 @@
 import {
   getWipFiber,
-  getHookIndex,
-  setHookIndex,
   getCurrentRoot,
   setWipRoot,
   setNextUnitOfWork,
   setDeletions,
+  getCurrentHook,
+  setCurrentHook,
+  getWorkInProgressHook,
+  setWorkInProgressHook,
 } from "./reconciler.js"
 
 function useState(initial) {
-  const wipFiber = getWipFiber()
-  const hookIndex = getHookIndex()
-
-  const oldHook =
-    wipFiber.alternate &&
-    wipFiber.alternate.hooks &&
-    wipFiber.alternate.hooks[hookIndex]
+  const oldHook = getCurrentHook()
 
   const hook = {
     state: oldHook ? oldHook.state : initial,
     queue: [],
+    next: null,
   }
 
   const actions = oldHook ? oldHook.queue : []
@@ -40,19 +37,12 @@ function useState(initial) {
     setDeletions([])
   }
 
-  wipFiber.hooks.push(hook)
-  setHookIndex(hookIndex + 1)
+  mountHook(hook)
   return [hook.state, setState]
 }
 
 function useEffect(fn, deps) {
-  const wipFiber = getWipFiber()
-  const hookIndex = getHookIndex()
-
-  const oldHook =
-    wipFiber.alternate &&
-    wipFiber.alternate.hooks &&
-    wipFiber.alternate.hooks[hookIndex]
+  const oldHook = getCurrentHook();
 
   const hasNoDeps = !deps;
   const hasChangedDeps = oldHook ? !deps.every((dep, i) => dep === oldHook.deps[i]) : true
@@ -60,10 +50,79 @@ function useEffect(fn, deps) {
     deps,
     cleanup: oldHook ? oldHook.cleanup : undefined,
     fn,
-    tag: hasNoDeps || hasChangedDeps ? 'EFFECT': null
+    tag: hasNoDeps || hasChangedDeps ? 'EFFECT': null,
+    next: null
   }
-  wipFiber.hooks.push(hook)
-  setHookIndex(hookIndex + 1)
+  mountHook(hook)
 }
 
-export { useState, useEffect }
+function useLayoutEffect(fn, deps) {
+  const oldHook = getCurrentHook();
+
+  const hasNoDeps = !deps;
+  const hasChangedDeps = oldHook ? !deps.every((dep, i) => dep === oldHook.deps[i]) : true
+  const hook = {
+    deps,
+    cleanup: oldHook ? oldHook.cleanup : undefined,
+    fn,
+    tag: hasNoDeps || hasChangedDeps ? 'LAYOUTEFFECT': null,
+    next: null
+  }
+  mountHook(hook)
+}
+
+function useRef(initial) {
+  const oldHook = getCurrentHook();
+
+  const hook = {
+    ref: oldHook ? oldHook.ref : { current: initial },
+    next: null
+  }
+
+  mountHook(hook)
+  return hook.ref
+}
+
+function useMemo(fn, deps) {
+  const oldHook = getCurrentHook();
+  const hasNoDeps = !deps;
+  const hasChangedDeps = oldHook ? !deps.every((dep, i) => dep === oldHook.deps[i]) : true
+
+  const hook = {
+    deps,
+    value: hasNoDeps || hasChangedDeps ? fn() : oldHook.value,
+    next: null
+  }
+  mountHook(hook)
+  return hook.value
+}
+
+function useCallBack(fn, deps) {
+  const oldHook = getCurrentHook();
+  const hasNoDeps = !deps;
+  const hasChangedDeps = oldHook ? !deps.every((dep, i) => dep === oldHook.deps[i]) : true
+
+  const hook = {
+    deps,
+    value: hasNoDeps || hasChangedDeps ? fn : oldHook.value,
+    next: null
+  }
+  mountHook(hook)
+  return hook.value
+}
+
+function mountHook(hook) {
+  const wipFiber = getWipFiber();
+  const workInProgressHook = getWorkInProgressHook();
+  const oldHook = getCurrentHook();
+
+  if (!wipFiber.memoizedState) {
+    wipFiber.memoizedState = hook
+  } else {
+    workInProgressHook.next = hook
+  }
+  setWorkInProgressHook(hook)
+  setCurrentHook(oldHook?.next ?? null);
+}
+
+export { useState, useEffect, useLayoutEffect, useRef, useCallBack, useMemo }
