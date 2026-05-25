@@ -1,8 +1,10 @@
-
 let nextUnitOfWork = null
 let currentRoot = null
 let wipRoot = null
 let deletions = null
+
+let wipFiber = null
+let hookIndex = null
 
 const isEvent = key => key.startsWith("on")
 const isProperty = key =>
@@ -108,8 +110,12 @@ function commitWork(fiber) {
   if (!fiber) {
     return
   }
-
-  const domParent = fiber.parent.dom
+  // 函数组件没有自己dom
+  let domParentFiber = fiber.parent
+  while(!domParentFiber.dom) {
+    domParentFiber = domParentFiber.parent;
+  }
+  const domParent = domParentFiber.dom
   if (
     fiber.effectTag === "PLACEMENT" &&
     fiber.dom != null
@@ -125,11 +131,19 @@ function commitWork(fiber) {
       fiber.props
     )
   } else if (fiber.effectTag === "DELETION") {
-    domParent.removeChild(fiber.dom)
+    commitDeletion(fiber, domParent);
   }
 
   commitWork(fiber.child)
   commitWork(fiber.sibling)
+}
+
+function commitDeletion(fiber, domParent) {
+  if (fiber.dom) {
+    domParent.removeChild(fiber.dom)
+  } else {
+    commitDeletion(fiber.child, domParent)
+  }
 }
 
 function render(element, container) {
@@ -164,13 +178,33 @@ function workLoop(deadline) {
 
 requestIdleCallback(workLoop)
 
-function performUnitOfWork(fiber) {
+function updateHostComponent(fiber) {
   if (!fiber.dom) {
     fiber.dom = createDom(fiber)
   }
 
   const elements = fiber.props.children
   reconcileChildren(fiber, elements)
+}
+
+function updateFunctionComponent(fiber) {
+  wipFiber = fiber;
+  hookIndex = 0;
+  wipFiber.hooks = [];
+  const children = [fiber.type(fiber.props)]
+  reconcileChildren(fiber, children)
+}
+
+function performUnitOfWork(fiber) {
+
+  const isFunctionComponent = fiber.type instanceof Function
+
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber)
+  } else {
+    updateHostComponent(fiber)
+  }
+
 
   if (fiber.child) {
     return fiber.child
@@ -242,16 +276,62 @@ function reconcileChildren(wipFiber, elements) {
   }
 }
 
+
+
+function useState(initial) {
+  const oldHook = wipFiber.alternate && wipFiber.alternate.hooks && wipFiber.alternate.hooks[hookIndex]
+
+  const hook = {
+    state: oldHook ? oldHook.state : initial,
+    queue: []
+  }
+
+  const actions = oldHook ? oldHook.queue : []
+
+  actions.forEach(action => {
+    hook.state = action(hook.state)
+  })
+
+  const setState = action => {
+    hook.queue.push(action);
+    wipRoot  = {
+      dom: currentRoot.dom,
+      props: currentRoot.props,
+      alternate: currentRoot
+    }
+    nextUnitOfWork = wipRoot
+    deletions = []
+  } 
+
+  wipFiber.hooks.push(hook);
+  hookIndex ++;
+  return [hook.state, setState]
+}
+
 const MReact = {
   createElement,
   render,
+  useState,
 }
 
 const container = document.getElementById("root") 
-/** @jsx Didact.createElement */
-function App(props) {
-  return <h1>Hi {props.name}</h1>
+
+/** @jsx MReact.createElement */
+function App() {
+  const [count, setCount] = MReact.useState(0)
+  const [num, setNum] = MReact.useState(0)
+  return <div>
+    <h1 onClick={() => setCount(c => c + 1)}>{count}</h1>
+    <h1 onClick={() => setNum(num => num + 1)}>{num}</h1>
+  </div>
 }
 
-const element = <App name="foo" />
-Didact.render(element, container)
+// function App() {
+//   const [count, setCount] = MReact.useState(0);
+//   return MReact.createElement("h1", {
+//     onClick: () => setCount(c => c + 1),
+//     children: count
+//   });
+// }
+
+MReact.render(<App />, container);

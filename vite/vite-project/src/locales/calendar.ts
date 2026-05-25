@@ -60,6 +60,7 @@ const CalendarLocaleEN: CalendarType = {
 
 export default {
   ["en-US"]: CalendarLocaleEN,
+  ["zh-CN"]: CalendarLocaleCH,
   en: CalendarLocaleEN,
   zh: CalendarLocaleCH,
 };

@@ -9,6 +9,7 @@ import { Form, Input } from "antd";
 import Button from "@arco-design/web-react/es/Button";
 import Space from "@arco-design/web-react/es/Space";
 import { Suspense, lazy } from "react";
+import { Link } from "@src/MyRoute";
 
 const CalendarTest = lazy(() => import("../../components/ui/Calendar"));
 
@@ -19,15 +20,14 @@ function Index() {
   return (
     // <ThemeContext value={theme}>
     <LocaleContext value={navigator.language}>
+      <Link to="/second/1234">second</Link>
       <Form>
         <Input />
         <Input />
       </Form>
-
       <Suspense>
         <CalendarTest value={dayjs("2024-11-4")} />
       </Suspense>
-
       <Space size="large">
         <Button type="primary">Primary</Button>
         <Button type="secondary">Secondary</Button>

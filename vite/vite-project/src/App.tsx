@@ -1,26 +1,59 @@
 // import Index from "./pages/index";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { lazy, Suspense } from "react";
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import { Suspense } from "react";
+import Index from "@src/pages/index";
+import Second from "@src/pages/second";
+import { BrowserRouter, Link, Outlet, Routes } from "./MyRoute";
+import type { RouteConfig } from "./MyRoute/interface";
 
-const Index = lazy(() => import("./pages/index"));
-const Second = lazy(() => import("./pages/second"));
+// const Index = lazy(() => import("./pages/index"));
+// const Second = lazy(() => import("./pages/second"));
 
-const routes = createBrowserRouter([
+// const routes = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <Index />,
+//   },
+//   {
+//     path: "/test",
+//     element: <Second />,
+//   },
+// ]);
+function Layout() {
+  return (
+    <div>
+      <nav>
+        <Link to="/">index</Link>
+        <p></p>
+        <Link to="/second">second</Link>
+      </nav>
+      <Outlet />
+    </div>
+  );
+}
+
+const routes: RouteConfig[] = [
   {
     path: "/",
-    element: <Index />,
+    element: <Layout />,
+    children: [
+      {
+        path: "/index",
+        element: <Index />,
+      },
+      {
+        path: "/second",
+        element: <Second />,
+      },
+    ],
   },
-  {
-    path: "/test",
-    element: <Second />,
-  },
-]);
+];
 
 function App() {
   return (
-    <Suspense>
-      <RouterProvider router={routes}></RouterProvider>;
-    </Suspense>
+    <BrowserRouter>
+      <Routes routes={routes} />
+    </BrowserRouter>
   );
 }
 

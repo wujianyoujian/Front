@@ -7,10 +7,13 @@ import LocaleContext from "../../contexts/locale";
 import { Form, Input } from "antd";
 import Button from "@arco-design/web-react/es/Button";
 import Space from "@arco-design/web-react/es/Space";
+import { useParams } from "@src/MyRoute/hook";
 
 function Index() {
   // const [theme, setTheme] = useState<THEME_TYPE>("ligth");
   // const [value, setValue] = useState(new Date("2024-5-1"));
+  const param = useParams();
+  console.log(param);
 
   return (
     // <ThemeContext value={theme}>

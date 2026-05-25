@@ -12,7 +12,13 @@
 - 2. React 的 Diff 算法原理是什么？key 的作用是什么？✅ 2026-05-21 00:00 59分
 
   **答：** 不知道。Diff 算法通过三个启发式假设将 O(n³) 降为 O(n)：①同层比较，跨层级节点直接删除重建；②不同类型组件直接销毁重建；③同级节点用 key 标识复用。key 的作用是让 React 识别列表中哪个节点是哪个，避免顺序变化时全量更新。不能用 index 作 key，会导致顺序变化时状态错乱，应用业务 id。
-- 3. React Fiber 架构是什么？解决了什么问题？时间切片和可中断渲染是如何实现的？
+- 3. React Fiber 架构是什么？解决了什么问题？时间切片和可中断渲染是如何实现的？✅ 2026-05-24 00:00 59分
+
+  **答：** 双向链表结构（纠正：是单向链表，三个指针 child/sibling/return），可中断不了解。Fiber 是 React 16 重写的协调引擎，每个组件对应一个 fiber 节点（JS 对象）。解决了 React 15 Stack Reconciler 递归同步遍历无法中断导致主线程卡顿的问题。可中断原理：把递归改成循环+链表，每处理完一个 fiber 检查剩余时间，不够则暂停让出主线程，用 MessageChannel 模拟 requestIdleCallback 实现时间切片（每片约 5ms）。还维护 current/workInProgress 双缓冲树，构建完成后 commit 阶段一次性切换。
+
+  **延伸 A：** Lane 模型优先级如何工作？ → 用二进制位表示优先级通道，SyncLane=最高（flushSync），InputContinuousLane=用户输入，DefaultLane=普通setState，TransitionLane=useTransition，IdleLane=最低。位运算合并比较高效，调度时取最高优先级 lane 先执行，低优先级任务被打断后保留队列等待。 → 用户回答：不懂
+
+  **延伸 B：** commit 阶段分哪几个子阶段？ → 三个子阶段：①BeforeMutation（变更前）：执行 getSnapshotBeforeUpdate，调度 useEffect；②Mutation（变更）：真正操作 DOM，执行 useLayoutEffect 清理函数，完成后切换 current 树；③Layout（变更后）：执行 useLayoutEffect 回调（同步，DOM 已更新），执行 componentDidMount/Update，异步调度 useEffect 的清理和回调。 → 用户回答：不懂
 - 4. React 组件的生命周期有哪些阶段？Class 组件和函数组件的生命周期有何不同？
 - 5. React 中受控组件和非受控组件的区别是什么？各自适用什么场景？
 

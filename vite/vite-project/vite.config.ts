@@ -46,6 +46,7 @@ export default defineConfig({
   optimizeDeps: {
     // entries: '',
     force: false,
+    exclude: ["esBuild"],
   },
   css: {
     preprocessorOptions: {
