@@ -31,20 +31,37 @@ class TreeNode {
  */
 
 function preorderTraversal(root: TreeNode | null): number[] {
+  // let result: Array<number> = [];
+
+  // function recurrence(node: TreeNode | null, result: Array<number>) {
+  //   if (!node) {
+  //     return result;
+  //   }
+  //   result.push(node.val);
+  //   recurrence(node.left, result);
+  //   recurrence(node.right, result);
+  //   return result;
+  // }
+
+  // return recurrence(root, result);
   let result: Array<number> = [];
+  let stack = [];
 
-  function recurrence(node: TreeNode, result: Array<number>) {
-    if (!node) {
-      return [];
-    }
-    result.push(node.val);
-    recurrence(node.left, result);
-    recurrence(node.right, result);
-    return result;
+  if ((root === null)) {
+    return [];
   }
+  stack.push(root);
 
-  return recurrence(root, result);
+  while (stack.length) {
+    let node: TreeNode = stack.pop();
+    result.push(node.val);
+    if (node.right != null) {
+      stack.push(node.right);
+    }
+    if (node.left != null) {
+      stack.push(node.left);
+    }
+  }
+  return result;
 }
 // @lc code=end
-
-module.exports = {};

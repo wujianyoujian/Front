@@ -31,31 +31,43 @@ function flatAll(arr) {
 
 // console.log(flatAll([[[2], [3, [4]]]]));
 
-
 function flat1(arr = [], depth) {
-  if (depth === 0) return arr
+  if (depth === 0) return arr;
 
   return arr.reduce((acc, cur) => {
     if (Array.isArray(cur) && depth > 0) {
-      acc.push(...flat1(cur, depth - 1))
+      acc.push(...flat1(cur, depth - 1));
     } else {
       acc.push(cur);
     }
-    return acc
-  }, [])
+    return acc;
+  }, []);
 }
-
 
 function flat2(arr = [], depth) {
-  if (depth === 0) return arr
+  if (depth === 0) return arr;
   return arr.reduce((acc, cur) => {
     if (Array.isArray(cur) && depth > 0) {
-      acc.push(...(flat2(cur, depth - 1)))
+      acc.push(...flat2(cur, depth - 1));
     } else {
-      acc.push(cur)
+      acc.push(cur);
     }
-    return acc
-  }, [])
+    return acc;
+  }, []);
 }
 
-console.log(flat2([[[2], [3, [4]]]], 3));
+function flat3(arr, depth) {
+  if (depth === 0) {
+    return arr;
+  }
+  return arr.reduce((acc, cur) => {
+    if (Array.isArray(cur) && depth > 1) {
+      acc.push(...flat(cur, depth - 1));
+    } else {
+      acc.push(cur);
+    }
+    return acc;
+  }, []);
+}
+
+console.log(flat3([[[2], [3, [4]]]], 3));

@@ -44,7 +44,6 @@ function deBounce(fn, { wait = 300, immediate = true }) {
   };
 }
 
-
 function deBounce3(fn, { wait = 300, immediate = true }) {
   let timer = null;
   return function (...args) {
@@ -52,14 +51,14 @@ function deBounce3(fn, { wait = 300, immediate = true }) {
     clearTimeout(timer);
 
     timer = setTimeout(() => {
-      timer = null
+      timer = null;
       if (!immediate) {
-        fn.apply(this, args)
+        fn.apply(this, args);
       }
-    }, [])
+    }, []);
 
-    if (canNow) fn.apply(this, args)
-  }
+    if (canNow) fn.apply(this, args);
+  };
 }
 
 function deBounce4(fn, { wait = 300, immediate = true }) {
@@ -73,10 +72,30 @@ function deBounce4(fn, { wait = 300, immediate = true }) {
     timer = setTimeout(() => {
       timer = null;
       if (!immediate) {
-        fn.apply(this, args)
+        fn.apply(this, args);
       }
-    }, wait)
+    }, wait);
 
-    if (canNow) fn.apply(this, args)
-  }
+    if (canNow) fn.apply(this, args);
+  };
+}
+
+function deBounce5(fn, { wait = 300, immediate = ture }) {
+  let timer = null;
+
+  return function (...args) {
+    let canNow = immediate && !timer;
+
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      timer = null;
+      if (!immediate) {
+        fn.apply(this, args);
+      }
+    }, wait);
+    if (canNow) {
+      fn.apply(this, args);
+    }
+  };
 }

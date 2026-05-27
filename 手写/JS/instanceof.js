@@ -62,38 +62,51 @@
 //   return false;
 // }
 
-
 function myInstanceof(obj, construcotor) {
-  if (obj == null || (typeof obj !== 'function' && typeof obj !== 'object')) {
-    return false
+  if (obj == null || (typeof obj !== "function" && typeof obj !== "object")) {
+    return false;
   }
 
   const proto = Object.getPrototypeOf(obj);
   while (proto != null) {
     if (proto === construcotor.prototype) {
-      return true
+      return true;
     }
     proto = Object.getPrototypeOf(proto);
   }
-  return false
+  return false;
 }
 
+// function myInstanceof1(obj, constructor) {
+//   if (obj == null || (typeof obj !== 'object' && typeof obj !== 'function')) return false
 
-function myInstanceof1(obj, constructor) {
-  if (obj == null || (typeof obj !== 'object' && typeof obj !== 'function')) return false
+//   let proto = Object.getPrototypeOf(obj);
+//   while (proto !== null) {
+//     if (proto === constructor.prototype) {
+//       return true
+//     }
+//     proto = Object.getPrototypeOf(proto)
+//   }
+//   return falses
+
+// }
+
+function myInstanceof2(obj, constructor) {
+  if (obj == null || (typeof obj !== "object" && typeof obj !== "function")) {
+    return false;
+  }
 
   let proto = Object.getPrototypeOf(obj);
-  while (proto !== null) {
+  while (proto) {
     if (proto === constructor.prototype) {
-      return true
+      return true;
     }
-    proto = Object.getPrototypeOf(proto)
+    proto = Object.getPrototypeOf(proto);
   }
-  return falses
-
+  return false;
 }
 
-console.log(myInstanceof1(null, Array));
-console.log(myInstanceof1([], Array));
-console.log(myInstanceof1("1", String));
-console.log(myInstanceof1(new Map(), Map));
+console.log(myInstanceof2(null, Array));
+console.log(myInstanceof2([], Array));
+console.log(myInstanceof2("1", String));
+console.log(myInstanceof2(new Map(), Map));

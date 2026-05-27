@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=94 lang=typescript
+ * @lc app=leetcode.cn id=572 lang=typescript
  *
- * [94] 二叉树的中序遍历
+ * [572] 另一棵树的子树
  */
 
 // @lc code=start
@@ -19,23 +19,8 @@
  * }
  */
 
-function inorderTraversal(root: TreeNode | null): number[] {
-  let result = [];
-  let stack = [];
-  let cur = root;
-
-  if (root == null) {
-    return [];
-  }
-  while (cur != null || stack.length > 0) {
-    while (cur) {
-      stack.push(cur);
-      cur = cur?.left;
-    }
-    let node = stack.pop();
-    result.push(node?.val);
-    cur = node?.right;
-  }
-  return result;
-}
+function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {
+    
+};
 // @lc code=end
+

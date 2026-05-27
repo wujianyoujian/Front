@@ -71,19 +71,35 @@
     return result;
   }
 
-  let tree = createBinaryTree([
-    3,
-    2,
-    9,
-    null,
-    null,
-    10,
-    null,
-    null,
-    8,
-    null,
-    4,
-  ]);
+  // 层序遍历, 迭代法
+  function levelOrder(root: TreeNode) {
+    let queue = [];
+    let result = [];
+    if (root == null) {
+      return [];
+    }
+    queue.push(root);
+    while (queue.length) {
+      let size = queue.length;
+
+      for (let i = 0; i < size; i++) {
+        let node: TreeNode = queue.shift();
+        result.push(node.value);
+        if (node?.leftNode) {
+          queue.push(node?.leftNode);
+        }
+        if (node?.rightNode) {
+          queue.push(node?.rightNode);
+        }
+      }
+    }
+    return result
+  }
+
+  // 层序遍历，递归法
+  function levelOrder1(root: TreeNode) {}
+
+  let tree = createBinaryTree([3, 2, 9, null, null, 10, null, null, 8, null, 4]);
   const result = preOrderTraveler(tree, []);
   console.log(result);
   console.log(middleOrderTravel(tree, []));

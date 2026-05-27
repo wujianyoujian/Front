@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=94 lang=typescript
+ * @lc app=leetcode.cn id=226 lang=typescript
  *
- * [94] 二叉树的中序遍历
+ * [226] 翻转二叉树
  */
 
 // @lc code=start
@@ -19,23 +19,15 @@
  * }
  */
 
-function inorderTraversal(root: TreeNode | null): number[] {
-  let result = [];
-  let stack = [];
-  let cur = root;
-
+function invertTree(root: TreeNode | null): TreeNode | null {
   if (root == null) {
-    return [];
+    return root;
   }
-  while (cur != null || stack.length > 0) {
-    while (cur) {
-      stack.push(cur);
-      cur = cur?.left;
-    }
-    let node = stack.pop();
-    result.push(node?.val);
-    cur = node?.right;
-  }
-  return result;
+  let temp = root.left;
+  root.left = root.right;
+  root.right = temp;
+  invertTree(root.left);
+  invertTree(root.right);
+  return root;
 }
 // @lc code=end

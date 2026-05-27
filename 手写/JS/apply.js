@@ -7,16 +7,14 @@ Function.prototype.myApply = function (context, args = []) {
   return result;
 };
 
-
 Function.prototype.myApply = function (context, args = []) {
   context = context ?? globalThis;
   const key = Symbol();
   context[key] = this;
   const result = context[key](...args);
   delete context[key];
-  return result
-}
-
+  return result;
+};
 
 Function.prototype.myApply = function (context, args = []) {
   context = context ?? globalThis;
@@ -24,5 +22,14 @@ Function.prototype.myApply = function (context, args = []) {
   context[key] = this;
   const result = context[key](...args);
   delete result[key];
-  return result
-}
+  return result;
+};
+
+Function.prototype.Apply = function (context, args = []) {
+  context = context ?? globalThis;
+  const key = Symbol();
+  context[key] = this;
+  const result = context[key](...rags);
+  delete context[key];
+  return result;
+};

@@ -20,19 +20,33 @@
  */
 
 function postorderTraversal(root: TreeNode | null): number[] {
-  let result: Array<number> = []
-  function recurrence(node: TreeNode, result: Array<number>) {
-    if (!node) {
-      return []
-    }
-    recurrence(node.left, result)
-    recurrence(node.right, result)
-    result.push(node.val)
+  let result: Array<number> = [];
 
-    return result
+  // function dfs(node: TreeNode | null) {
+  //   if (node == null) {
+  //     return;
+  //   }
+  //   dfs(node.left);
+  //   dfs(node.right);
+  //   result.push(node.val);
+  // }
+  // dfs(root);
+  // return result;
+  let stack = [];
+  if (root == null) {
+    return [];
   }
-
-  return recurrence(root, result)
-};
+  stack.push(root);
+  while (stack.length > 0) {
+    let node = stack.pop();
+    result.push(node?.val);
+    if (node.left !== null) {
+      stack.push(node.left);
+    }
+    if (node.right !== null) {
+      stack.push(node.right);
+    }
+  }
+  return result.reverse();
+}
 // @lc code=end
-
