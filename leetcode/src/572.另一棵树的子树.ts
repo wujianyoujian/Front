@@ -20,7 +20,16 @@
  */
 
 function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {
-    
-};
-// @lc code=end
+  function isCompare(left: TreeNode | null, right: TreeNode | null): boolean {
+    if (left == null && right == null) return true;
+    if (left == null || right == null) return false;
+    if (left.val !== right.val) return false;
 
+    return isCompare(left.left, right.left) && isCompare(left.right, right.right);
+  }
+
+  if (root == null) return false;
+  if (isCompare(root, subRoot)) return true;
+  return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+}
+// @lc code=end

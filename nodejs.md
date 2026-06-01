@@ -4,10 +4,31 @@
 
 ## 一、核心机制与运行时
 
-- 1. 简述 Node.js 的运行时架构（V8、libuv、Node Bindings、内置模块之间的关系）。
-- 2. Node.js 为什么是单线程？单线程指的是什么？哪些部分其实是多线程的？
-- 3. Node.js 和浏览器的 JavaScript 运行环境有哪些核心差异？
-- 4. libuv 在 Node.js 中扮演什么角色？它的线程池默认大小是多少，受什么影响？
+- 1. 简述 Node.js 的运行时架构（V8、libuv、Node Bindings、内置模块之间的关系）。✅ 2026-05-28 00:00 59分
+
+  **答：** 未作答 **完整答案：** Node.js 运行时分四层：用户代码/内置JS模块（顶层）→ Node Bindings（C++桥接层，连接JS与底层库）→ V8（执行JS、GC）+ libuv（事件循环、线程池、异步I/O）→ 操作系统。一次fs.readFile调用链：JS → Bindings → libuv线程池 → 完成后回调推入事件循环 → V8执行回调。
+
+- 2. Node.js 为什么是单线程？单线程指的是什么？哪些部分其实是多线程的？✅ 2026-05-28 00:00 30分
+
+  **答：** 写的代码只在一个线程上运行 **完整答案：** 单线程指V8执行JS的主线程，同一时刻只有一段JS运行。设计原因：避免多线程锁/竞态复杂度，I/O密集场景单线程+事件循环足够。多线程部分：libuv线程池（默认4个，处理文件I/O、DNS lookup、crypto、zlib）、OS内核线程（网络I/O）、worker_threads（手动创建JS线程）。
+
+  **延伸 A：** libuv线程池大小对并发文件I/O的影响 → 未作答 线程池=并行I/O任务数，设为1则串行排队，设为128则高并发但线程开销增加，建议CPU核心数2~4倍。
+
+  **延伸 B：** dns.resolve和dns.lookup的区别 → 未作答 lookup调用系统getaddrinfo（阻塞，占线程池），resolve直接走DNS协议（异步，不占线程池）。高并发下大量lookup会塞满线程池，http.request默认用lookup是常见性能陷阱。
+- 3. Node.js 和浏览器的 JavaScript 运行环境有哪些核心差异？✅ 2026-05-28 00:00 59分
+
+  **答：** 未作答 **完整答案：** 核心差异：全局对象（window vs global）、无DOM/BOM、模块系统（CJS vs ESM）、有fs/process/cluster、无同源限制、事件循环无渲染阶段、setTimeout返回对象而非数字。
+
+  **延伸 A：** Node.js 18+ fetch和浏览器fetch的区别 → 未作答 底层用undici实现，无自动Cookie、无CORS限制、无浏览器证书管理，性能比http.request更好。
+
+  **延伸 B：** 同构代码注意事项 → 未作答 不能假设运行环境，用平台专属API前先判断（typeof window !== 'undefined'），浏览器专属API（document/navigator）和Node专属模块（fs/path）不能直接用，选库时确认是否支持同构。
+- 4. libuv 在 Node.js 中扮演什么角色？它的线程池默认大小是多少，受什么影响？✅ 2026-05-28 00:00 40分
+
+  **答：** C语言实现的I/O处理，128 **完整答案：** libuv负责：事件循环（六阶段调度）、线程池（阻塞I/O）、网络I/O（封装epoll/kqueue/IOCP）、定时器、信号处理。线程池默认4个（不是128），最大1024，通过UV_THREADPOOL_SIZE环境变量控制。只处理阻塞型任务（文件I/O、dns.lookup、crypto、zlib），网络I/O走OS异步接口不占线程池。
+
+  **延伸 A：** 线程池满了会怎样 → 未作答 不会丢失，排队等待。libuv内部维护任务队列，线程空闲后取下一个，响应时间变长但任务不丢。
+
+  **延伸 B：** 文件I/O为何需要线程池而网络I/O不需要 → 未作答 OS原生支持网络异步（epoll/kqueue/IOCP），文件系统接口大多是同步阻塞的，libuv用线程池线程去阻塞等待文件操作，主线程不受影响。
 - 5. `process.nextTick` 和 `queueMicrotask`、`Promise.then` 有什么区别？谁先执行？
 
 ## 二、事件循环（Event Loop）
