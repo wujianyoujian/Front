@@ -15,9 +15,11 @@ function Timer() {
   return <p>Timer is running...</p>
 }
 
-/** @jsx MReact.createElement */
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(() => {
+    console.log('count initial')
+    return 1
+  })
   const [num, setNum] = useState(0)
   const [show, setShow] = useState(false)
   const domRef = useRef(null);
@@ -40,9 +42,15 @@ function App() {
     console.log(domRef)
   }, [domRef.current])
 
+  console.log('App render', count)
+
   return (
     <div ref={domRef}>
-      <h1 style={{ userSelect: 'none' }} onClick={() => setCount(c => c + 1)}>{count}</h1>
+      <h1 style={{ userSelect: 'none' }} onClick={() => {
+        setCount(count + 1)
+        setCount(count + 2)
+        setCount(count + 3)
+      }}>{count}</h1>
       <h1 style={{ userSelect: 'none' }} onClick={() => setNum(n => n + 1)}>{num}</h1>
       <button onClick={() => setShow(s => !s)}>
         {show ? "卸载 Timer" : "挂载 Timer"}

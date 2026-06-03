@@ -1,6 +1,7 @@
 import {
   getWipFiber,
   getCurrentRoot,
+  getWipRoot,
   setWipRoot,
   setNextUnitOfWork,
   setDeletions,
@@ -8,33 +9,35 @@ import {
   setCurrentHook,
   getWorkInProgressHook,
   setWorkInProgressHook,
+  scheduleRerender
 } from "./reconciler.js"
+
+
 
 function useState(initial) {
   const oldHook = getCurrentHook()
 
   const hook = {
-    state: oldHook ? oldHook.state : initial,
+    state: oldHook ? oldHook.state : typeof initial == 'function' ? initial() : initial,
     queue: [],
     next: null,
   }
 
   const actions = oldHook ? oldHook.queue : []
   actions.forEach(action => {
-    hook.state = action(hook.state)
+    if (typeof action === 'function') {
+      hook.state = action(hook.state)
+    } else {
+      hook.state = action
+    }
   })
 
   const setState = action => {
+    const newState = typeof action === 'function' ? action(hook.state) : action
+    if (Object.is(newState, hook.state)) return
+
     hook.queue.push(action)
-    const currentRoot = getCurrentRoot()
-    const newWipRoot = {
-      dom: currentRoot.dom,
-      props: currentRoot.props,
-      alternate: currentRoot,
-    }
-    setWipRoot(newWipRoot)
-    setNextUnitOfWork(newWipRoot)
-    setDeletions([])
+    scheduleRerender()
   }
 
   mountHook(hook)

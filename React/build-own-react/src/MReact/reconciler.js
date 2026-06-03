@@ -115,6 +115,12 @@ function commitDeletion(fiber, domParent) {
   }
 }
 
+function completeWork(fiber) {
+  if (typeof fiber.type === 'string' && !fiber.dom) {
+    fiber.dom = createDom(fiber)
+  }
+}
+
 function performUnitOfWork(fiber) {
   const isFunctionComponent = fiber.type instanceof Function
 
@@ -128,15 +134,13 @@ function performUnitOfWork(fiber) {
 
   let nextFiber = fiber
   while (nextFiber) {
+    completeWork(nextFiber)
     if (nextFiber.sibling) return nextFiber.sibling
     nextFiber = nextFiber.parent
   }
 }
 
 function updateHostComponent(fiber) {
-  if (!fiber.dom) {
-    fiber.dom = createDom(fiber)
-  }
   reconcileChildren(fiber, fiber.props.children)
 }
 
@@ -198,6 +202,19 @@ function reconcileChildren(wipFiber, elements) {
   }
 }
 
+function scheduleRerender() {
+  if(wipRoot) return
+
+  const newWipRoot = {
+    dom: currentRoot.dom,
+    props: currentRoot.props,
+    alternate: currentRoot,
+  }
+  setWipRoot(newWipRoot)
+  setNextUnitOfWork(newWipRoot)
+  setDeletions([])
+}
+
 function getWipFiber() { return wipFiber }
 function getWorkInProgressHook() { return workInProgressHook }
 function setWorkInProgressHook(hook) { workInProgressHook = hook }
@@ -221,4 +238,5 @@ export {
   getCurrentRoot,
   setNextUnitOfWork,
   setDeletions,
+  scheduleRerender,
 }
