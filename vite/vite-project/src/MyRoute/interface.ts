@@ -1,5 +1,6 @@
 export type RouteConfig = {
-  path: string;
+  path?: string;
   element: React.ReactNode;
   children?: RouteConfig[];
+  index?: boolean;
 };

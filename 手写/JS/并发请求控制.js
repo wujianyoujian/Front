@@ -47,3 +47,32 @@ class RequestPoll {
     this.cache.clear();
   }
 }
+
+class RequestPoll {
+  constructor(maxConcurrent) {
+    this.maxConcurrent = maxConcurrent;
+    this.queue = [];
+    this.running = 0;
+  }
+
+  add(requestFn) {
+    return new Promise((resolve, reject) => {
+      this.queue.push({ requestFn, resolve, reject });
+      this.run();
+    });
+  }
+  run() {
+    while (this.running < this.maxConcurrent && this.queue.length > 0) {
+      const { requestFn, resolve, reject } = this.queue.shift();
+      this.running++;
+
+      Promise.resolve(requestFn())
+        .then(resolve)
+        .catch(reject)
+        .finally(() => {
+          this.running--;
+          this.run();
+        });
+    }
+  }
+}

@@ -14,6 +14,7 @@ export function BrowserRouter(props: BrowserRouterProps) {
   useEffect(() => {
     const handler = () => setPathname(window.location.pathname);
     window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
   }, []);
 
   console.log(window.location.pathname);
@@ -32,14 +33,14 @@ export function Route({ path, element }: { path: string; element: React.ReactNod
   if (!match) return null;
 
   return (
-    <RouterContext
+    <RouterContext.Provider
       value={{
         pathname,
         params: match.params,
       }}
     >
       {element}
-    </RouterContext>
+    </RouterContext.Provider>
   );
 }
 
@@ -65,9 +66,9 @@ export function Routes({ routes }: { routes: RouteConfig[] }) {
 
   return matches.reduceRight((outlet, { route, params }) => {
     return (
-      <RouterContext value={{ pathname, params }}>
-        <OutletContext value={outlet}>{route.element}</OutletContext>
-      </RouterContext>
+      <RouterContext.Provider value={{ pathname, params }}>
+        <OutletContext.Provider value={outlet}>{route.element}</OutletContext.Provider>
+      </RouterContext.Provider>
     );
   }, null);
 }

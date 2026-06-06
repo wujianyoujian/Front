@@ -38,11 +38,11 @@ const routes: RouteConfig[] = [
     element: <Layout />,
     children: [
       {
-        path: "/index",
+        index: true,
         element: <Index />,
       },
       {
-        path: "/second",
+        path: "second",
         element: <Second />,
       },
     ],

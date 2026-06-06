@@ -17,31 +17,52 @@ import {
 function useState(initial) {
   const oldHook = getCurrentHook()
 
+  if (oldHook) {
+    const hook = {
+      state: oldHook.state,
+      queue: oldHook.queue,
+      next: null
+    }
+
+    const queue = hook.queue
+    if (queue.pending.length > 0) {
+      queue.pending.forEach(action => {
+        hook.state = typeof action === 'function' ? action(hook.state) : action
+      })
+      queue.lastRenderedState = hook.state
+      queue.pending = []
+    }
+    mountHook(hook);
+    return [hook.state, queue.dispatch]
+  }
+
+  const initialState = oldHook ? oldHook.state : typeof initial == 'function' ? initial() : initial;
   const hook = {
-    state: oldHook ? oldHook.state : typeof initial == 'function' ? initial() : initial,
-    queue: [],
+    state: initialState,
+    queue: null,
     next: null,
   }
 
-  const actions = oldHook ? oldHook.queue : []
-  actions.forEach(action => {
-    if (typeof action === 'function') {
-      hook.state = action(hook.state)
-    } else {
-      hook.state = action
-    }
-  })
+  const queue = {
+    pending: [],
+    lastRenderedState: initialState,
+    dispatch: null
+  }
 
-  const setState = action => {
-    const newState = typeof action === 'function' ? action(hook.state) : action
-    if (Object.is(newState, hook.state)) return
+  const dispatch = action => {
+    const newState = typeof action === 'function' ? action(queue.lastRenderedState) : action;
+    if (Object.is(newState, queue.lastRenderedState)) return
 
-    hook.queue.push(action)
+    queue.pending.push(action)
+    queue.lastRenderedState = newState;
     scheduleRerender()
   }
 
+  queue.dispatch = dispatch
+  hook.queue = queue
   mountHook(hook)
-  return [hook.state, setState]
+
+  return [hook.state, dispatch]
 }
 
 function useEffect(fn, deps) {

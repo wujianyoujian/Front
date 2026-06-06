@@ -109,7 +109,7 @@ function deepClone3(val, map = new WeakMap()) {
   if (val instanceof Map) {
     let m = new Map();
     map.set(val, m);
-    val.forEach((v, k) => map.set(deepClone3(v, map), deepClone3(k, map)));
+    val.forEach((v, k) => m.set(deepClone3(v, map), deepClone3(k, map)));
     return m;
   }
 
@@ -126,6 +126,36 @@ function deepClone3(val, map = new WeakMap()) {
 
   for (let key of Object.ownKeys(val)) {
     clone[i] = deepClone3(val[key], map);
+  }
+
+  return clone;
+}
+
+function deepClone4(val, map = new WeakMap()) {
+  if (val == null) return val;
+  if (typeof val !== "object") return val;
+  if (map.has(val)) return map.get(val);
+  if (val instanceof RegExp) return new RegExp(val);
+  if (val instanceof Date) return new Date(val);
+
+  if (val instanceof Map) {
+    const m = new Map();
+    map.set(val, m);
+    val.forEach((v, k) => m.set(deepClone4(k, map), deepClone4(v, map)));
+    return m;
+  }
+
+  if (val instanceof Set) {
+    const s = new Set();
+    map.set(val, s);
+    val.forEach((v) => s.add(deepClone4(v, map)));
+    return s;
+  }
+
+  const clone = Array.isArray(val) ? [] : {};
+  map.set(val, clone);
+  for (let key of Object.ownKeys(val)) {
+    clone[key] = deepClone4(val[key], map);
   }
 
   return clone;

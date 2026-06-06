@@ -57,5 +57,5 @@ react 自己实现的一套事件系统，比如 onClick, 等事件都不是浏�
 ### jsx的本质，什么是虚拟dom
 
 ### React Route 的原理
-监听了页面路变化
+监听了页面路由变化
 history

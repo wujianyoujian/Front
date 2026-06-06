@@ -29,10 +29,25 @@ export function matchPath(pattern: string, pathname: string) {
 
 export function matchRoutes(routes: RouteConfig[], pathname: string, parentPath = "/") {
   for (const route of routes) {
-    const fullPath = joinPaths(parentPath, route.path);
+    if (route.index) continue;
+
+    const fullPath = joinPaths(parentPath, route.path!);
     const match = matchPath(fullPath, pathname);
 
     if (match) {
+      if (route.children) {
+        const childMatches = matchRoutes(route.children, pathname, fullPath);
+        if (childMatches) {
+          return [{ route, params: match.params }, ...childMatches];
+        }
+        const indexRoute = route.children.find((c) => c.index);
+        if (indexRoute) {
+          return [
+            { route, params: match.params },
+            { route: indexRoute, params: {} },
+          ];
+        }
+      }
       return [{ route, params: match.params }];
     }
     if (route.children) {
@@ -41,12 +56,12 @@ export function matchRoutes(routes: RouteConfig[], pathname: string, parentPath 
         return [{ route, params: {} }, ...childMatches];
       }
     }
-    return null;
   }
+  return null;
 }
 
 export function joinPaths(parent: string, child: string) {
-  if (parent === "/") return child || "/";
   if (!child || child === "/") return parent;
-  return parent + child;
+  if (parent === "/") return "/" + child;
+  return parent + "/" + child;
 }

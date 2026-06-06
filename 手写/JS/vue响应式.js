@@ -21,7 +21,7 @@ function trigger(target, key) {
   if (!depsMap) return;
 
   //   {
-  //     [{count: 0}]: { count: fn() }
+  //     {count: 0}: { count: fn() }
   //   }
   const deps = depsMap.get(key);
   if (deps) {
