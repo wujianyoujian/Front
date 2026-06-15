@@ -43,3 +43,13 @@ function compose2(fns) {
     return result;
   };
 }
+
+function compose3(fns) {
+  return function (x) {
+    let result = x;
+    for (let i = fns.length - 1; i > 0; i--) {
+      result = fns[i](x);
+    }
+    return result;
+  };
+}

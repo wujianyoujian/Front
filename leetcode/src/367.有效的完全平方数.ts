@@ -6,16 +6,12 @@
 
 // @lc code=start
 function isPerfectSquare(num: number): boolean {
-  let left = 0;
+  if (num === 1 || num === 0) {
+    return true;
+  }
+
+  let left = 1;
   let right = num - 1;
-
-  if (num === 1) {
-    return true;
-  }
-
-  if (num === 0) {
-    return true;
-  }
 
   while (left <= right) {
     let middle = left + ((right - left) >> 1);

@@ -160,3 +160,32 @@ function deepClone4(val, map = new WeakMap()) {
 
   return clone;
 }
+
+
+function deepClone5(val, map = new WeapMap) {
+  if (val == null || typeof val !== 'object') return val
+  if (map.has(val)) return map.get(val)
+  if (val instanceof RegExp) return new RegExp(val)
+  if (val instanceof Date) return new Date(val)
+
+  if (val instanceof Set) {
+    const s = new Set();
+    map.set(val, s);
+    val.forEach(v => s.add(deepClone5(v, map)));
+    return s
+  }
+
+  if (val instanceof Map) {
+    const m = new Map()
+    map.set(val, m);
+    val.forEach((v, k) => m.set(deepClone5(k, map), deepClone5(v, map)))
+    return m
+  }
+  const clone = Array.isArray(val) ? []: {}
+  map.set(val, clone);
+
+  for (let key of Object.ownKeys(val)) {
+    clone[key] = deepClone5(val[key], map)
+  }
+  return clone
+}

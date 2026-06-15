@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=94 lang=typescript
+ * @lc app=leetcode.cn id=110 lang=typescript
  *
- * [94] 二叉树的中序遍历
+ * [110] 平衡二叉树
  */
 
 // @lc code=start
@@ -19,24 +19,21 @@
  * }
  */
 
-function inorderTraversal(root: TreeNode | null): number[] {
-  let result = [];
-  let stack = [];
-  let cur = root;
+function isBalanced(root: TreeNode | null): boolean {
+  function height(node: TreeNode | null): number {
+    if (node == null) return 0;
 
-  if (root == null) {
-    return [];
-  }
+    let left = height(node.left);
+    let right = height(node.right);
 
-  while (cur || stack.length > 0) {
-    while (cur) {
-      stack.push(cur);
-      cur = cur.left;
-    }
-    let node = stack.pop();
-    result.push(node?.val);
-    cur = node?.right;
+    if (left === -1) return -1;
+
+    if (right === -1) return -1;
+
+    if (Math.abs(left - right) > 1) return -1;
+
+    return Math.max(left, right) + 1;
   }
-  return result;
+  return height(root) !== -1;
 }
 // @lc code=end

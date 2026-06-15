@@ -4,7 +4,7 @@
  * [206] 反转链表
  */
 
-import ListNode, { createNodeList } from './practice/单链表';
+import ListNode, { createNodeList } from "./practice/单链表";
 
 // @lc code=start
 /**
@@ -20,38 +20,10 @@ import ListNode, { createNodeList } from './practice/单链表';
  */
 
 function reverseList(head: ListNode | null): ListNode | null {
-  function NodeListToArray(l: ListNode): Array<number> {
-    let node = l;
-    let arr = [];
-    if (!l) {
-      return []
-    }
-    while (node) {
-      arr.push(node.val);
-      node = node.next;
-    }
-    return arr.reverse();
-  }
-
-  function createNodeList(arr: Array<number>): ListNode {
-    if (arr.length === 0) {
-      return null
-    }
-    let Head = new ListNode(arr[0]);
-    let node = Head;
-    let index = 0;
-    while (index < arr.length - 1) {
-      index++;
-      node.next = new ListNode(arr[index]);
-      node = node.next;
-    }
-    return Head;
-  }
-  const result = createNodeList(NodeListToArray(head))
-  return result
+  
 }
 // @lc code=end
 
-let l = createNodeList([]);
+let l = createNodeList([1, 2, 3, 4, 5]);
 
-reverseList(l)
+reverseList(l);

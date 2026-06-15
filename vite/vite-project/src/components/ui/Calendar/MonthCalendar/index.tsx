@@ -1,9 +1,10 @@
 import type { Dayjs } from "dayjs";
 import type { CalendarProps } from "..";
 import styles from "../index.module.scss";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import LocaleContext from "@src/contexts/locale";
 import { LocaleMap } from "@src/locales";
+import useStore from "@src/stores/theme";
 
 type MonthCalendarProps = CalendarProps;
 
@@ -87,7 +88,7 @@ const RenderRowCells = (props: {
 const MonthCalendar = (props: MonthCalendarProps) => {
   const { dateInnerContent, dateRender, locale } = props;
 
-  console.log("render");
+  console.log("Month Component render");
   const weekList = [
     "sunday",
     "monday",
@@ -98,8 +99,9 @@ const MonthCalendar = (props: MonthCalendarProps) => {
     "saturday",
   ] as const;
 
-  const localeValue = useContext(LocaleContext) ?? locale;
-  console.log(localeValue);
+  const theme = useStore((state) => state.theme);
+
+  console.log(theme);
 
   const rows = chunkByWeek(getAllDays(props.value));
 
@@ -108,7 +110,7 @@ const MonthCalendar = (props: MonthCalendarProps) => {
       <div className={styles["calendar-month-week-list"]}>
         {weekList.map((week) => (
           <div className={styles["calendar-month-week-list-item"]} key={week}>
-            {LocaleMap["calendar"][localeValue as "en" | "zh"].week[week]}
+            {LocaleMap["calendar"]["zh"].week[week]}
           </div>
         ))}
       </div>

@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=94 lang=typescript
+ * @lc app=leetcode.cn id=257 lang=typescript
  *
- * [94] 二叉树的中序遍历
+ * [257] 二叉树的所有路径
  */
 
 // @lc code=start
@@ -19,24 +19,20 @@
  * }
  */
 
-function inorderTraversal(root: TreeNode | null): number[] {
-  let result = [];
-  let stack = [];
-  let cur = root;
-
-  if (root == null) {
-    return [];
-  }
-
-  while (cur || stack.length > 0) {
-    while (cur) {
-      stack.push(cur);
-      cur = cur.left;
+function binaryTreePaths(root: TreeNode | null): string[] {
+  let result: string[] = [];
+  function travel(node: TreeNode | null, path: string) {
+    if (node == null) {
+      return;
     }
-    let node = stack.pop();
-    result.push(node?.val);
-    cur = node?.right;
+    path += node.val;
+    if (node?.left == null && node?.right == null) {
+      result.push(path);
+    }
+    travel(node?.left || null, path + "->");
+    travel(node?.right || null, path + "->");
   }
+  travel(root, "");
   return result;
 }
 // @lc code=end

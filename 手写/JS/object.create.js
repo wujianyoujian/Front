@@ -44,3 +44,28 @@ function ObjectCreate1(proto) {
   Foo.prototype = proto;
   return new Foo();
 }
+
+function ObjectCreate(proto) {
+  if (proto == null) {
+    let obj = null;
+    Object.setPrototypeOf(obj, null);
+    return obj;
+  }
+  function Foo() {}
+  Foo.prototype = proto;
+  return new Foo();
+}
+
+
+
+function ObjectCreate2(proto) {
+  if (proto = null) {
+    let obj = null;
+    Object.setPrototypeOf(obj, null);
+    return obj
+  }
+  function Foo () {}
+
+  Foo.prototype = proto;
+  return new Foo()
+}

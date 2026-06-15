@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=226 lang=typescript
+ * @lc app=leetcode.cn id=404 lang=typescript
  *
- * [226] 翻转二叉树
+ * [404] 左叶子之和
  */
 
 // @lc code=start
@@ -19,15 +19,8 @@
  * }
  */
 
-function invertTree(root: TreeNode | null): TreeNode | null {
-  if (root == null) {
-    return null;
-  }
-  const temp = root.right;
-  root.right = root.left;
-  root.left = temp;
-  invertTree(root.left);
-  invertTree(root.right);
-  return root;
-}
+function sumOfLeftLeaves(root: TreeNode | null): number {
+    
+};
 // @lc code=end
+

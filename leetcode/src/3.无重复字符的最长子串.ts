@@ -6,23 +6,24 @@
 
 // @lc code=start
 function lengthOfLongestSubstring(s: string): number {
+  const map = new Map<string, number>();
   let left = 0;
   let right = 0;
-  let result: Array<string> = [];
-  let result1 = 0;
+  let result = 0;
 
   while (right < s.length) {
-    
-    result.push(s[right])
+    const char = s[right];
 
-      while(result.slice(left, right).includes(result[right])) {
-        left ++
-      }
-    result1 = Math.max(right - left + 1, result1)
-    right ++;
+    if (map.has(char) && map.get(char)! >= left) {
+      left = map.get(char)! + 1;
+    }
+
+    map.set(char, right);
+    result = Math.max(result, right - left + 1);
+    right++;
   }
-  return result1
-};
+  return result;
+}
 // @lc code=end
 
-lengthOfLongestSubstring('pwwkew')
+lengthOfLongestSubstring("pwwkew");

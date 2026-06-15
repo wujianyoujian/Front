@@ -35,20 +35,11 @@
 
 ### react 合成事件是啥
 
-react 自己实现的一套事件系统，比如 onClick, 等事件都不是浏览器原生事件，对原来的事件进行了封装
 
-- 跨浏览器兼容，不同浏览器的事件API有兼容性问题
-- 事件委托，统一绑定在根节点上
-- 批处理基础
-- 跨平台：同一套事件抽象，React Native 也能用
 
 ### react如何实现的
 
-1. 初始化，把所有的事件注册到root上，如 root.addEventListener("click", dispatchEvent);
-2. 组件执行，渲染的时候，<div onClick={handleClick}></div> handleClick 存在当前组件对应的 fiber 节点上 也会指向dom 的 \_reactFiber，\_reactFiber.pendingProps.onClick 就是这个handleClick
-3. 用户点击的时候，还是使用的原生 click，冒泡到 root 上，执行 dispatchEvent 方法
-4. 找到 点击目标 target，获取到了fiber \_\_reactFiber
-5. 通过当前节点中 return 指向父节点，向上获取到所有的 onClick方法，存放起来，就是所有冒泡的事件，然后执行，捕获同理
+
 
 ### 为啥react 要接受一个不可变对象
 

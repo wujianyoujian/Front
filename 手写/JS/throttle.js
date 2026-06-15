@@ -141,3 +141,23 @@ function throttle3(fn, wait) {
     }
   };
 }
+
+function throttle4(fn, wait) {
+  let timer = null;
+  let lastTime = 0;
+  return function (...args) {
+    let now = Date.now();
+    let remainTime = wait - (now - lastTime);
+
+    clearTimeout(timer);
+    if (remainTime < 0) {
+      fn.apply(this, args);
+      lastTime = now;
+    } else {
+      timer = setTimeout(() => {
+        fn.apply(this, args);
+        lastTime = now;
+      }, wait);
+    }
+  };
+}

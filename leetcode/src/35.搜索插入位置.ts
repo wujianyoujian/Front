@@ -8,20 +8,20 @@
 function searchInsert(nums: number[], target: number): number {
   let left = 0;
   let right = nums.length - 1;
-  let middle;
+
   while (left <= right) {
-    middle = left + ((right - left) >> 1);
-    if (nums[middle] > target) {
+    let middle = left + ((right - left) >> 1);
+    if (nums[middle] == target) {
+      return middle;
+    } else if (nums[middle] > target) {
       right = middle - 1;
     } else if (nums[middle] < target) {
       left = middle + 1;
-    } else {
-      return middle;
     }
   }
   return left;
 }
 // @lc code=end
 
-const res1 = searchInsert([1, 2, 3, 4, 6, 7], 8);
+const res1 = searchInsert([1, 3, 5, 6], 5);
 console.log(res1);

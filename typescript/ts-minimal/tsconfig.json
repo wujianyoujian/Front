@@ -8,6 +8,7 @@
     "sourceMap": true,
     "noEmitOnError": true,
     "strictNullChecks": false,
+    "noImplicitAny": true
   },
   "include": ["src"]
 }

@@ -1,14 +1,42 @@
-function createLeak() {
-  const hugeData = new Array(10000000).fill("🐛"); // 大量数据
-  return function onClick() {
-    console.log("clicked");
-    // 虽然不用 hugeData，但 V8 闭包机制仍会保留它的引用
-  };
+function concurrent(tasks, limit) {
+  return new Promise((resolve) => {
+    const results = []
+    let running = 0;
+    let i = 0;
+
+    function next() {
+      if (running === 0 && i === tasks.length) {
+        resolve(results)
+      }
+      while(running < limit && i < tasks.length) {
+        const idx = i++;
+        running ++;
+        tasks[idx]().then((res) => {
+          console.log(res)
+          results[idx] = res
+        }).catch((err) => {
+          results[idx] = err
+        }).finally(() => {
+          running --;
+          next()
+        })        
+      }
+    }
+    next()
+  })
 }
-const handler = createLeak(); // hugeData 永久泄漏
 
-let $btn = document.querySelector("#btn");
-
-$btn.onclick = function () {
-  handler();
-};
+const delay = (ms, val) => () => new Promise(r => setTimeout(()=> r(val), ms));
+const tasks = [
+    delay(1000, 'A'),
+    delay(500, 'B'),
+    delay(300, 'C'),
+    delay(800, 'D'),
+    delay(200, 'E'),
+    delay(1000, 'F'),
+    delay(500, 'G'),
+    delay(300, 'H'),
+    delay(800, 'I'),
+    delay(200, 'J'),
+  ];
+concurrent(tasks, 2).then(console.log);

@@ -106,7 +106,22 @@ function myInstanceof2(obj, constructor) {
   return false;
 }
 
-console.log(myInstanceof2(null, Array));
-console.log(myInstanceof2([], Array));
-console.log(myInstanceof2("1", String));
-console.log(myInstanceof2(new Map(), Map));
+function myInstanceof3 (obj, constructor) {
+  if (obj == null || (typeof obj !== 'object' && typeof obj !== 'function')) {
+    return false;
+  }
+
+  let proto = Object.getPrototypeOf(obj);
+  while(proto) {
+    if (proto === constructor.prototype) {
+      return true
+    }
+    proto = Object.getPrototypeOf(proto)
+  }
+  return false
+}
+
+console.log(myInstanceof3(null, Array));
+console.log(myInstanceof3([], Array));
+console.log(myInstanceof3("1", String));
+console.log(myInstanceof3(new Map(), Map));

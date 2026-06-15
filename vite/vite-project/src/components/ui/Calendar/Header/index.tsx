@@ -1,6 +1,10 @@
+import { useContext } from "react";
 import styles from "../index.module.scss";
+import { ThemeContext } from "@src/contexts/theme";
 
 const Header = () => {
+  console.log("Head Render");
+
   return (
     <div className={styles["calendar-header"]}>
       <div className={styles["calendar-header-left"]}>

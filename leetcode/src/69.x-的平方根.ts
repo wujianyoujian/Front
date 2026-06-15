@@ -6,28 +6,20 @@
 
 // @lc code=start
 function mySqrt(x: number): number {
-  let left = 0;
+  if (x <= 1) return x;
+
+  let left = 1;
   let right = x;
-  let result = -1;
-
-  if (x === 0) {
-    return 0;
-  }
-
-  if (x === 1) {
-    return 1;
-  }
 
   while (left <= right) {
     let middle = left + ((right - left) >> 1);
     if (middle * middle <= x) {
-      result = middle;
       left = middle + 1;
     } else {
       right = middle - 1;
     }
   }
-  return Math.floor(result);
+  return right;
 }
 // @lc code=end
 console.log(mySqrt(8));

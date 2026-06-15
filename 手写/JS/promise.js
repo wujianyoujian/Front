@@ -97,18 +97,22 @@ class MyPromise {
     return new MyPromise((resolve, reject) => {
       const result = [];
       let count = 0;
+
+      if (!promises.length) {
+        resolve([])
+      }
       promises.forEach((p, i) => {
-        MyPromise.resolve(p).then(
+        MyPromise.Resolve(p).then(
           (val) => {
             result[i] = { status: "fulfilled", value: val };
             if (++count === promises.length) {
               resolve(result);
             }
           },
-          (reson) => {
-            result[i] = { status: "rejected", value: reson };
+          (reason) => {
+            result[i] = { status: "rejected", reason: reason };
             if (++count === promises.length) {
-              reject(reson);
+              resolve(result);
             }
           }
         );
@@ -598,7 +602,149 @@ class MyPromise2 {
   }
 }
 
-const p2 = new MyPromise2((resolve) => {
+
+class MyPromise3 {
+  constructor(executor) {
+    this.value = undefined;
+    this.reason = undefined;
+    this.state = 'pending';
+
+    this.onFulfilledCallbacks = []
+    this.onRejectedCallbacks = []
+
+    const resolve = (value) => {
+      if (this.state === 'pending') {
+        this.state = 'fulFilled';
+        this.value = value
+
+        this.onFulfilledCallbacks.forEach(fn => fn())
+      }
+    }
+
+    const reject = (reason) => {
+      if (this.state === 'pending') {
+        this.state = 'rejected';
+        this.reason = reason
+
+        this.onRejectedCallbacks.forEach(fn => fn())
+      }
+    }
+
+    try {
+      executor(resolve, reject)
+    } catch (error) {
+      reject(error)
+    }
+  }
+
+  then(onFulfilled, onRejected) {
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (v) => v; 
+    onRejected = typeof onRejected === 'function' ? onFulfilled : (r) => {
+      throw r
+    };
+
+    return new MyPromise3((resolve, reject) => {
+      function handle(fn, val) {
+        queueMicrotask(() => {
+          try {
+            const result = fn(val);
+            typeof result.then === 'function' ? result.then(resolve, reject) : resolve(val)
+          } catch (error) {
+            reject(error)
+          }
+        })
+      }
+
+      if (this.state === 'pending') {
+        this.onFulfilledCallbacks.push(() => handle(onFulfilled, this.value));
+        this.onRejectedCallbacks.push(() => handle(onRejected, this.reason));
+      }
+      if (this.state === 'fulfilled') {
+        handle(onFulfilled, this.value);
+      }
+      if (this.state === 'rejected') {
+        handle(onRejected, this.reason);
+      }
+    })
+  }
+  static Resolve(val) {
+    if (val instanceof MyPromise3) return val;
+    return new MyPromise3((resolve) => resolve(val))
+  }
+  static Reject(r) {
+    return new MyPromise3((_, reject) => reject(r))
+  }
+  
+
+  catch(onRejected) {
+    return this.then(null, onRejected)
+  }
+
+  finally(fn) {
+    return this.then((val) => {
+      return MyPromise.Resolve(fn()).then(() => val)
+    }, (r) => {
+      return MyPromise.Resolve(fn()).then(() => {
+        throw r
+      })
+    })
+  }
+
+  static all(promises) {
+    return new MyPromise3((resolve, reject) => {
+      let result = [];
+      let count = 0;
+      if (!promises.length) {
+        return resolve([])
+      }
+      promises.forEach((p, index) => {
+        MyPromise3.Resolve(p).then(val => {
+          result[index] = val
+          if (++count === promises.length) {
+            resolve(result)
+          }
+        }).catch(reject)
+      })
+    })
+  }
+
+  static race(promises) {
+    return new MyPromise3((resolve, reject) => {
+      
+      if (!promises.length) return
+      promises.forEach(p => {
+        MyPromise3.Resolve(p).then(resolve).catch(reject)
+      })
+    })
+  }
+
+  static allSettled(promises) {
+    return new MyPromise3((resolve, reject) => {
+      let result= [];
+      let count = 0;
+      
+      if (!promises.length) {
+        return resolve([])
+      }
+      promises.forEach((p, index) => {
+        MyPromise3.Resolve(p).then((value) => {
+          result[index] = { status: 'fulfilled', value }
+          if (++count == promises.length) {
+            resolve(result)
+          }
+        }, error => {
+          result[index] = { status: 'rejected', error }
+          if (++count == promises.length) {
+            reject(result)
+          }
+        })
+      })
+    })
+  }
+  
+}
+
+const p2 = new MyPromise3((resolve) => {
   setTimeout(() => {
     resolve(12);
   }, 100);
@@ -609,3 +755,6 @@ p2.then((res) => {
 });
 
 console.log("同步");
+
+const test1 = new Promise()
+test1.catch()

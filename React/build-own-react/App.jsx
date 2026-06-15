@@ -5,7 +5,13 @@ import MReact, {
   useState,
   useMemo,
   useLayoutEffect,
-} from "./src/MReact";
+  lazy,
+  Suspense,
+} from "./libs/MReact";
+import Index from "./src/index";
+// import Other from "./src/Other";
+
+const Other = lazy(() => import("./src/Other.jsx"));
 
 function Timer() {
   useEffect(() => {
@@ -35,35 +41,37 @@ function App() {
     return num + "ces";
   }, [num]);
 
-  const List = useMemo(() => {
-    return (
-      <div style={{ height: "400px", overflowY: "scroll" }}>
-        {new Array(200000).fill(1).map((item, index) => {
-          return <div className="list-item">{item + index}</div>;
-        })}
-      </div>
-    );
-  }, []);
+  // const List = useMemo(() => {
+  //   return (
+  //     <div style={{ height: "400px", overflowY: "scroll" }}>
+  //       {new Array(2000000).fill(1).map((item, index) => {
+  //         return <div className="list-item">{item + index}</div>;
+  //       })}
+  //     </div>
+  //   );
+  // }, []);
 
   console.log(count1);
 
   useEffect(() => {
-    console.log(123);
+    console.log("useEffect");
   }, []);
 
   useLayoutEffect(() => {
-    console.log(12333);
+    console.log("useLayoutEffect");
   }, []);
 
   useLayoutEffect(() => {
-    console.log(domRef);
+    setNum(num + 1);
+    setNum(num + 2);
+    setNum(num + 3);
   }, [domRef.current]);
 
   console.log("App render", count);
 
   return (
     <div ref={domRef}>
-      <h1
+      {/* <h1
         style={{ userSelect: "none" }}
         onClick={() => {
           setCount(count + 1);
@@ -73,14 +81,27 @@ function App() {
       >
         {count}
       </h1>
-      <h1 style={{ userSelect: "none" }} onClick={() => setNum((n) => n + 1)}>
+      <h1
+        style={{ userSelect: "none" }}
+        onClick={() => {
+          setTimeout(() => {
+            setNum(num + 1);
+            setNum(num + 2);
+            setNum(num + 3);
+          }, 10);
+        }}
+      >
         {num}
       </h1>
       <button onClick={() => setShow((s) => !s)}>
         {show ? "卸载 Timer" : "挂载 Timer"}
       </button>
       {show ? <Timer /> : <p>Timer unmounted</p>}
-      {List}
+
+      <Index></Index> */}
+      <Suspense fallback={<p>Loading</p>}>
+        <Other></Other>
+      </Suspense>
     </div>
   );
 }

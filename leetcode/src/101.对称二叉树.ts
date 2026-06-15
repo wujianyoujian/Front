@@ -34,13 +34,22 @@ function isSymmetric(root: TreeNode | null): boolean {
   //   }
 
   //   return true;
+  // function isCompare(left: TreeNode | null, right: TreeNode | null): boolean {
+  //   if (left == null && right == null) return true;
+  //   if (left == null || right == null) return false;
+  //   if (left.val !== right.val) return false;
+  //   return isCompare(left.left, right.right) && isCompare(left.right, right.left);
+  // }
+
+  // return isCompare(root?.left ?? null, root?.right ?? null);
+
   function isCompare(left: TreeNode | null, right: TreeNode | null): boolean {
     if (left == null && right == null) return true;
     if (left == null || right == null) return false;
     if (left.val !== right.val) return false;
+
     return isCompare(left.left, right.right) && isCompare(left.right, right.left);
   }
-
-  return isCompare(root?.left ?? null, root?.right ?? null);
+  return isCompare(root?.left || null, root?.right || null);
 }
 // @lc code=end

@@ -108,3 +108,22 @@
   Child.prototype = Object.create(Parent.prototype);
   Child.prototype.constructor = Child;
 }
+
+
+{
+  function Parent (name) {
+    this.name = name;
+  }
+
+  Parent.prototype.sayMyName = function() {
+    console.log(this.name)
+  }
+
+  function Child(name, sex) {
+    Parent.call(this, name);
+    this.sex = sex;
+  }
+
+  Child.prototype = Object.create(Parent.prototype)
+  Child.prototype.constructor = Child
+}

@@ -19,27 +19,27 @@
  * }
  */
 
-// function minDepth(root: TreeNode | null): number {
-//   let queue = [];
-//   let depth = 0;
-//   if (root == null) {
-//     return 0;
-//   }
-//   queue.push(root);
-//   while (queue.length > 0) {
-//     const size = queue.length;
-//     depth++;
-//     for (let i = 0; i < size; i++) {
-//       const node = queue.shift();
-//       if (!node?.left && !node?.right) {
-//         return depth;
-//       }
-//       if (node?.left) queue.push(node.left);
-//       if (node?.right) queue.push(node.right);
-//     }
-//   }
-//   return depth;
-// }
+function minDepth(root: TreeNode | null): number {
+  let queue = [];
+  let depth = 0;
+  if (root == null) {
+    return 0;
+  }
+  queue.push(root);
+  while (queue.length > 0) {
+    const size = queue.length;
+    depth++;
+    for (let i = 0; i < size; i++) {
+      const node = queue.shift();
+      if (!node?.left && !node?.right) {
+        return depth;
+      }
+      if (node?.left) queue.push(node.left);
+      if (node?.right) queue.push(node.right);
+    }
+  }
+  return depth;
+}
 // @lc code=end
 
 {

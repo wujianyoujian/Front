@@ -27,6 +27,8 @@ const Calendar = (props: CalendarProps) => {
     styles: custStyles,
   } = props;
 
+  console.log("Calendar render");
+
   return (
     <div className={classnames(styles.calendar, className)} style={{ ...custStyles }}>
       <Header />

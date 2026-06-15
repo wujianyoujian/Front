@@ -9,7 +9,12 @@ let wipFiber = null;
 let workInProgressHook = null;
 let currentHook = null;
 let totalCount = 0;
-// let hookIndex = null
+
+let SuspenseComponent = null;
+
+function setSuspenseComponent(comp) {
+  SuspenseComponent = comp;
+}
 
 function render(element, container) {
   wipRoot = {
@@ -48,7 +53,7 @@ function commitRoot() {
 
 function commitEffect(fiber) {
   if (!fiber) return;
-  let stack = [];
+  let stack = [fiber];
 
   while (stack.length) {
     let f = stack.pop();
@@ -90,7 +95,7 @@ function commitWork(fiber) {
   const stack = [fiber];
 
   while (stack.length) {
-    console.log("totalCount:", ++totalCount);
+    // console.log("totalCount:", ++totalCount);
     const f = stack.pop();
     let domParentFiber = f.parent;
     while (!domParentFiber.dom) {
@@ -109,7 +114,7 @@ function commitWork(fiber) {
         f.props.ref.current = f.dom;
       }
     } else if (f.effectTag === "DELETION") {
-      commitDeletion(fiber, domParent);
+      commitDeletion(f, domParent);
     }
     if (f.sibling) stack.push(f.sibling);
     if (f.child) stack.push(f.child);
@@ -136,22 +141,53 @@ function completeWork(fiber) {
 }
 
 function performUnitOfWork(fiber) {
-  const isFunctionComponent = fiber.type instanceof Function;
+  try {
+    const isFunctionComponent = fiber.type instanceof Function;
 
-  if (isFunctionComponent) {
-    updateFunctionComponent(fiber);
-  } else {
-    updateHostComponent(fiber);
+    if (isFunctionComponent) {
+      updateFunctionComponent(fiber);
+    } else {
+      updateHostComponent(fiber);
+    }
+
+    if (fiber.child) return fiber.child;
+
+    let nextFiber = fiber;
+    while (nextFiber) {
+      completeWork(nextFiber);
+      if (nextFiber.sibling) return nextFiber.sibling;
+      nextFiber = nextFiber.parent;
+    }
+  } catch (thrownValue) {
+    if (thrownValue instanceof Promise) {
+      return handleSuspension(fiber, thrownValue);
+    } else {
+      throw thrownValue;
+    }
   }
+}
 
-  if (fiber.child) return fiber.child;
+function handleSuspension(fiber, promise) {
+  // 向上找最近的 Suspense
+  let parent = fiber.parent;
+  while (parent) {
+    if (parent.type === SuspenseComponent) {
+      // 标记挂起，清掉之前创建的子 fiber
+      parent._suspended = true;
+      parent.child = null;
 
-  let nextFiber = fiber;
-  while (nextFiber) {
-    completeWork(nextFiber);
-    if (nextFiber.sibling) return nextFiber.sibling;
-    nextFiber = nextFiber.parent;
+      // promise resolve 后，清除标记，重新渲染
+      promise.then(() => {
+        parent._suspended = false;
+        scheduleRerender();
+      });
+
+      return parent;
+    }
+    parent = parent.parent;
   }
+  // 没找到 Suspense，原样抛出
+  throw promise;
 }
 
 function updateHostComponent(fiber) {
@@ -163,28 +199,47 @@ function updateFunctionComponent(fiber) {
   wipFiber.memoizedState = null; // 链表头，初始为空
   workInProgressHook = null;
   currentHook = fiber.alternate?.memoizedState ?? null;
-  const children = [fiber.type(fiber.props)];
+
+  const result = fiber.type(fiber.props);
+  const children = Array.isArray(result) ? result : [result];
   reconcileChildren(fiber, children);
 }
 
 function reconcileChildren(wipFiber, elements) {
   let index = 0;
+  // 老fiber 的子fiber 第一个
   let oldFiber = wipFiber.alternate && wipFiber.alternate.child;
   let prevSibling = null;
 
-  while (index < elements.length || oldFiber != null) {
+  const oldFiberByKey = new Map();
+  let iter = oldFiber;
+
+  while (iter) {
+    const key = iter.props?.key;
+    if (key != null) oldFiberByKey.set(key, iter);
+    iter = iter.sibling;
+  }
+
+  while (index < elements.length) {
     const element = elements[index];
     let newFiber = null;
 
-    const sameType = oldFiber && element && element.type === oldFiber.type;
+    const key = element?.props?.key;
+    const matchedByKey = key != null ? oldFiberByKey.get(key) : null;
+
+    const sameType = matchedByKey
+      ? element && element.type === matchedByKey.type
+      : oldFiber && element && element.type === oldFiber.type;
 
     if (sameType) {
+      const old = matchedByKey || oldFiber;
+      if (matchedByKey) oldFiberByKey.delete(key);
       newFiber = {
-        type: oldFiber.type,
+        type: old.type,
         props: element.props,
-        dom: oldFiber.dom,
+        dom: old.dom,
         parent: wipFiber,
-        alternate: oldFiber,
+        alternate: old,
         effectTag: "UPDATE",
       };
     }
@@ -214,19 +269,31 @@ function reconcileChildren(wipFiber, elements) {
     prevSibling = newFiber;
     index++;
   }
+  for (const old of oldFiberByKey.values()) {
+    old.effectTag = "DELETION";
+    deletions.push(old);
+  }
+
+  // 4. 清理剩余未匹配的下标旧 fiber
+  while (oldFiber) {
+    oldFiber.effectTag = "DELETION";
+    deletions.push(oldFiber);
+    oldFiber = oldFiber.sibling;
+  }
 }
 
 function scheduleRerender() {
-  if (wipRoot) return;
-
-  const newWipRoot = {
-    dom: currentRoot.dom,
-    props: currentRoot.props,
-    alternate: currentRoot,
-  };
-  setWipRoot(newWipRoot);
-  setNextUnitOfWork(newWipRoot);
-  setDeletions([]);
+  Promise.resolve().then(() => {
+    if (wipRoot) return;
+    const newWipRoot = {
+      dom: currentRoot.dom,
+      props: currentRoot.props,
+      alternate: currentRoot,
+    };
+    setWipRoot(newWipRoot);
+    setNextUnitOfWork(newWipRoot);
+    setDeletions([]);
+  });
 }
 
 function getWipFiber() {
@@ -273,4 +340,5 @@ export {
   setNextUnitOfWork,
   setDeletions,
   scheduleRerender,
+  setSuspenseComponent,
 };
