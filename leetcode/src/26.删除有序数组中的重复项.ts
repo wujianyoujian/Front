@@ -23,7 +23,7 @@ function removeDuplicates(nums: number[]): number {
 
   for (; fastIndex < nums.length; fastIndex++) {
     if (nums[fastIndex] !== nums[slowIndex]) {
-      slowIndex = slowIndex + 1;
+      slowIndex++;
       nums[slowIndex] = nums[fastIndex];
     }
   }
@@ -33,6 +33,6 @@ function removeDuplicates(nums: number[]): number {
 // @lc code=end
 
 {
-  let result = removeDuplicates([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]);
+  let result = removeDuplicates([0, 1, 1, 1, 1, 2, 2, 3, 3, 4]);
   console.log(result);
 }

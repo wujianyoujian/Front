@@ -6,22 +6,19 @@
 
 // @lc code=start
 function maxArea(height: number[]): number {
-  let leftIndex = 0
-  let rightIndex = height.length - 1
-  let maxAreaValue = 0
-  while (leftIndex < rightIndex) {
-    maxAreaValue = Math.max(
-      maxAreaValue,
-      Math.min(height[leftIndex], height[rightIndex]) * (rightIndex - leftIndex)
-    )
-    if (height[leftIndex] > height[rightIndex]) {
-      rightIndex--
+  let left = 0;
+  let right = height.length - 1;
+  let maxAreaValue = 0;
+  while (left < right) {
+    maxAreaValue = Math.max(maxAreaValue, Math.min(height[left], height[right]) * (right - left));
+
+    if (height[left] > height[right]) {
+      right--;
     } else {
-      leftIndex++
+      left++;
     }
   }
-  // return (area[0].index - area[1].index) * area[1].value
-  return maxAreaValue
+  return maxAreaValue;
 }
 // @lc code=end
-console.log(maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]))
+console.log(maxArea([8, 7, 2, 1]));

@@ -35,23 +35,21 @@ function minSubArrayLen(target: number, nums: number[]): number {
   //   }
   // }
   // return result === Infinity ? 0 : result
-
-  let left = 0;
-  let right = 0;
+  let slow = 0;
+  let fast = 0;
   let result = Infinity;
-  let totalNum = 0;
+  let sum = 0;
 
-  while (right < nums.length) {
-    totalNum += nums[right];
-
-    while (totalNum >= target) {
-      result = Math.min(result, right - left + 1);
-      totalNum -= nums[left];
-      left++;
+  for (; fast < nums.length; fast++) {
+    sum += nums[fast];
+    while (sum >= target) {
+      result = Math.min(result, fast - slow + 1);
+      sum -= nums[slow];
+      slow++;
     }
-    right++;
   }
+  return result;
 }
 // @lc code=end
 
-minSubArrayLen(15, [1, 1, 1, 1, 1, 1, 1, 1]);
+minSubArrayLen(7, [2, 3, 1, 2, 4, 3]);

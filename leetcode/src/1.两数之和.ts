@@ -6,27 +6,15 @@
 
 // @lc code=start
 function twoSum(nums: number[], target: number): number[] {
-  let array1 = []
-  let endPointList: number[] = [nums.length - 1]
+  let map = new Map<number, number>();
+
   for (let i = 0; i < nums.length; i++) {
-    array1.push(...nums.slice(i, nums.length))
-  }
-  for (let i = nums.length - 1; i > 0; i--) {
-    endPointList.push(endPointList[nums.length - i - 1] + i)
-  }
-  let k = 0
-  let l: number = 0
-  for (let i = 0; i < array1.length; i++) {
-    if (array1[k] + array1[i] === target && k !== i) {
-      l = array1[i]
-      break
+    const complement = target - nums[i];
+    if (map.has(complement)) {
+      return [map.get(complement)!, i];
     }
-    if (endPointList.includes(i)) {
-      k++
-      continue
-    }
+    map.set(nums[i], i);
   }
-  return [k, nums.findIndex((item, index) => k !== index && item === l)]
 }
 // @lc code=end
 
@@ -34,7 +22,7 @@ function twoSum(nums: number[], target: number): number[] {
 
 // function twoSum1(nums: number[], target: number): number[] {}
 
-console.log(twoSum([1, 3, 4, 2], 6))
+console.log(twoSum([1, 3, 4, 2], 6));
 // 1, 2
 // 4, 8, 11, 13, 14
 //
