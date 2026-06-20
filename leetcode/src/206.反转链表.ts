@@ -20,10 +20,28 @@ import ListNode, { createNodeList } from "./practice/单链表";
  */
 
 function reverseList(head: ListNode | null): ListNode | null {
-  
+  // 1. 迭代 1 -> 2 -> 3 -> null
+  // null <- 1
+  // let pre = null;
+  // let cur = head;
+  // while (cur) {
+  //   const temp = cur.next;
+  //   cur.next = pre;
+  //   pre = cur;
+  //   cur = temp;
+  // }
+  // return pre;
+  // 2. 递归法
+  if (head == null || head?.next == null) return head;
+
+  const newHead = reverseList(head.next);
+
+  head.next.next = head;
+  head.next = null;
+  return newHead;
 }
 // @lc code=end
 
 let l = createNodeList([1, 2, 3, 4, 5]);
 
-reverseList(l);
+console.log(reverseList(l));

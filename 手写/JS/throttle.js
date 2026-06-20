@@ -161,3 +161,26 @@ function throttle4(fn, wait) {
     }
   };
 }
+
+
+function throttle5(fn, wait) {
+  let timer = null;
+  let last = 0;
+
+  return function (...args) {
+    let now = Date.now()
+    let remainTime = wait - (now - last);
+
+    clearTimeout(timer)
+
+    if (remainTime < 0) {
+      fn.apply(this, args);
+      last = now
+    } else {
+      timer = setTimeout(() => {
+        fn.apply(this, args)
+        last = now
+      }, wait)
+    }
+  }
+}

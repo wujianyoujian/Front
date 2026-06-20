@@ -136,3 +136,26 @@ function debounce5(fn, { wait, immediate }) {
     }
   };
 }
+
+
+
+
+function debounce6(fn, { wait, immediate = true }) {
+  let timer = null
+  return function (...args) {
+    const canNow = !timer && immediate;
+
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      timer = null
+      if (!immediate) {
+        fn.apply(this, args)
+      }
+    }, wait)
+
+    if (canNow) {
+      fn.apply(this, args)
+    }
+  }
+}

@@ -111,11 +111,11 @@
 
 
 {
-  function Parent (name) {
+  function Parent(name) {
     this.name = name;
   }
 
-  Parent.prototype.sayMyName = function() {
+  Parent.prototype.sayMyName = function () {
     console.log(this.name)
   }
 
@@ -126,4 +126,21 @@
 
   Child.prototype = Object.create(Parent.prototype)
   Child.prototype.constructor = Child
+}
+
+{
+  function Parent(name) {
+    this.name = name;
+  }
+  Parent.prototype.printNameHandle = function () {
+    console.log(this.name)
+  }
+
+  function Child(name, age) {
+    Parent.call(this, name);
+    this.age = age
+  }
+
+  Child.prototype = Object.create(Parent.prototype);
+  Child.prototype.constructor = Childƒ
 }

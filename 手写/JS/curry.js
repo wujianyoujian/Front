@@ -73,3 +73,15 @@ function curry3(fn) {
     };
   };
 }
+
+
+function curry4(fn) {
+  return function curried(...args) {
+    if (fn.length === args.length) {
+      return fn.apply(this, args)
+    }
+    return function (args1) {
+      return curried.apply(this, args.concat(args1))
+    }
+  }
+}

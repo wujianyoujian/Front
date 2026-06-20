@@ -33,3 +33,12 @@ Function.prototype.Apply = function (context, args = []) {
   delete context[key];
   return result;
 };
+
+Function.prototype.MyApply = function (context, args = []) {
+  const context = context ?? globalThis;
+  const key = Symbol();
+  context[key] = this;
+  const result = context[key](...args);
+  delete context[key]
+  return result
+}

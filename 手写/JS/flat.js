@@ -30,7 +30,7 @@ function flatAll(arr) {
 }
 
 function flatAll(arr) {
-  while(arr.some(Array.isArray)) {
+  while (arr.some(Array.isArray)) {
     arr = [].concat(...arr)
   }
   return arr
@@ -94,4 +94,20 @@ function flat4(arr, depth) {
   }, [])
 }
 
-console.log(flat4([[[2], [3, [4]]]], 3));
+
+function flat5(arr, depth) {
+  if (arr.length === 0) {
+    return arr
+  }
+  return arr.reduce((acc, cur) => {
+    if (Array.isArray(cur) && depth > 0) {
+      acc.push(...flat5(cur, depth - 1))
+    } else {
+      acc.push(cur)
+    }
+
+    return acc
+  }, [])
+}
+
+console.log(flat5([1, 2, 3, [3, [10]]], 3))

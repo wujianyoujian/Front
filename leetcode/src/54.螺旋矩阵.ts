@@ -6,9 +6,9 @@
 
 // @lc code=start
 function spiralOrder(matrix: number[][]): number[] {
-  let result = []
-  let m = matrix[0].length
-    index ++;
-  }
-};
+  let result = [];
+  let m = matrix[0].length;
+  // index ++;
+  // }
+}
 // @lc code=end
