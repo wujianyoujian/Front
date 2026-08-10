@@ -1,34 +1,35 @@
 {
-  const effectStack = []
-  let activeEffect = null;
-  const targetMap = new WeakMap();
+  let effectActive = null;
+  let effectList = [];
+  let targetMap = new WeakMap();
 
   function track(target, key) {
-    let depMap = targetMap.get(target);
-    if (!depMap) {
-      targetMap.set(target, depMap = new Map());
+    let depsMap = targetMap.get(target);
+    if (!depsMap) {
+      targetMap.set(target, depsMap = new Map())
     }
-    let deps = depMap.get(key);
+    let deps = depsMap.get(key);
     if (!deps) {
-      depMap.set(key, deps = new Set())
+      depsMap.set(key, deps = new Set())
     }
-    if (activeEffect) {
-      deps.add(activeEffect)
+    if (effectActive) {
+      deps.add(effectActive)
     }
   }
 
   function trigger(target, key) {
-    const depMap = targetMap.get(target)
-    const deps = depMap?.get(key);
-    deps?.forEach(fn => fn())
+    const depsMap = targetMap.get(target);
+    const deps  = depsMap.get(key);
+
+    deps?.forEach((fn) => fn())
   }
 
-  function reactive(target) {
-    return new Proxy(target, {
+  function reactive(obj) {
+    return new Proxy(obj, {
       get(target, key, receiver) {
         track(target, key);
-        const result = Reflect.get(target, key, receiver);
-        return typeof result === 'object' ? reactive(result) : result;
+        const resut = Reflect.get(target, key, receiver);
+        return typeof resut === 'object' ? reactive(resut) : resut
       },
       set(target, key, value, receiver) {
         const result = Reflect.set(target, key, value, receiver);
@@ -39,18 +40,19 @@
   }
 
   function effect(fn) {
-    effectStack.push(fn);
-    activeEffect = fn;
-    fn();
-    effectStack.pop();
-    activeEffect = effectStack[effectStack.length - 1] ?? null
+    effectList.push(fn);
+    effectActive = fn;
+    fn()
+    effectList.pop();
+    effectActive = effectList[effectList.length - 1] ?? null
   }
 
-  const state = reactive({ count: 2 });
+  let obj = { count: 2 };
+
+  const state = reactive(obj)
 
   effect(() => {
     console.log(state.count)
   })
-
-  state.count = 5
+  state.count = 12
 }

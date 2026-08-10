@@ -32,6 +32,7 @@ function reverseList(head: ListNode | null): ListNode | null {
   // }
   // return pre;
   // 2. 递归法
+  // 1 -> 2 -> 3 -> 4 -> 5 -> null
   if (head == null || head?.next == null) return head;
 
   const newHead = reverseList(head.next);

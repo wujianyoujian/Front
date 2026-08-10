@@ -6,37 +6,29 @@
 
 // @lc code=start
 function isAnagram(s: string, t: string): boolean {
-  let sMap: any = {}
-  let tMap: any = {}
-
-  for (let i of s) {
-    if (sMap[i]) {
-      sMap[i] = sMap[i] + 1
-    } else {
-      sMap[i] = 1
-    }
-  }
-
-  for (let i of t) {
-    if (tMap[i]) {
-      tMap[i] = tMap[i] + 1
-    } else {
-      tMap[i] = 1
-    }
-  }
+  let mapS = new Map();
+  let mapT = new Map();
 
   if (s.length !== t.length) {
-    return false
+    return false;
+  }
+  for (let k of s) {
+    mapS.set(k, (mapS.get(k) || 0) + 1);
   }
 
-  if (Object.keys(sMap).every((key: string) => sMap[key] === tMap[key])) {
-    return true
+  for (let k of t) {
+    mapT.set(k, (mapT.get(k) || 0) + 1);
   }
-
-  return false
+  console.log(mapS.keys());
+  for (let k of mapS.keys()) {
+    if (mapS.get(k) !== mapT.get(k)) {
+      return false;
+    }
+  }
+  return true;
 }
 // @lc code=end
 
 {
-  isAnagram('rat', 'car')
+  console.log(isAnagram("anagram", "nagaram"));
 }

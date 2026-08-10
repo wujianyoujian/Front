@@ -284,3 +284,13 @@ const handle = <T>(input: T): T => {
 type MyPick1<T, K extends keyof T> = {
   [P in K]: T[P];
 };
+
+class TagProtector<T extends string> {
+  protected __tag__: T
+}
+
+type Nominal<T, U extends string> = T & TagProtector<U>
+
+type Test = string extends object ? 1 : 2
+
+const res : Test = 1 

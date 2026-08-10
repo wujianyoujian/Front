@@ -189,3 +189,29 @@ function deepClone5(val, map = new WeapMap) {
   }
   return clone
 }
+
+function deepClone6(val, map = new WeapMap) {
+  if (val == null || typeof val !== 'obj') val;
+  if (map.has(val)) return map.get(val);
+  if (val instanceof Date) return new Date(val);
+  if (val instanceof RegExp) return new RegExp(val);
+  if (val instanceof Set) {
+    const s = new Set();
+    map.set(val, s);
+    val.forEach(v => s.add(deepClone6(v, map)));
+    return s;
+  }
+  if (val instanceof Map) {
+    const m = new Map();
+    map.set(val, m);
+    val.forEach((v, k) => m.set(deepClone6(k, map), deepClone6(v, map)))
+  }
+
+  const clone = Array.isArray(val) ? [] : {}
+
+  map.set(val, clone)
+  for (let k of Object.ownKeys(clone)) {
+    clone[k] = deepClone6(val[k], map)
+  }
+  return val;
+}

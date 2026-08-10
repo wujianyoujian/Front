@@ -6,28 +6,12 @@
 
 // @lc code=start
 function intersection(nums1: number[], nums2: number[]): number[] {
-  let result: any = []
-  let tempMap: any = {}
-  nums1.forEach((item, index) => {
-    if (!tempMap[item]) {
-      tempMap[item] = 0
-    }
-  })
-  nums2.forEach((item, index) => {
-    if (tempMap.hasOwnProperty(item)) {
-      tempMap[item] ++
-    }
-  })
-  Object.keys(tempMap).map(key => {
-    if (tempMap[key] > 0) {
-      result.push(Number(key))
-    }
-  })
-  return result
-};
+  let result = [];
+  
+  return result;
+}
 // @lc code=end
 
 {
-  intersection([1,2,3,1], [2,2])
+  intersection([1, 2, 3, 1], [2, 2]);
 }
-
