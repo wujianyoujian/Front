@@ -1,0 +1,23 @@
+useRef
+
+就是 hook 当前 返回一个对象
+
+{
+  current: 
+}
+
+<div ref={ { current:  } }></div>
+
+在commit 阶段，将更新后 dom 赋值给 ref
+
+每次组件渲染的时候，ref 都使用的同一份引用对象
+
+
+useMemo
+
+根据 当前deps 和 旧fiber 的 中hook的 deps 对比，有变化就重新执行，没有就使用旧值
+
+useCallBack 
+实现差不多，只是存放函数的引用
+
+

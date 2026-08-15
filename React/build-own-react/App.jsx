@@ -71,7 +71,7 @@ function App() {
 
   return (
     <div ref={domRef}>
-      {/* <h1
+      <h1
         style={{ userSelect: "none" }}
         onClick={() => {
           setCount(count + 1);
@@ -98,10 +98,10 @@ function App() {
       </button>
       {show ? <Timer /> : <p>Timer unmounted</p>}
 
-      <Index></Index> */}
-      <Suspense fallback={<p>Loading</p>}>
+      <Index></Index>
+      {/* <Suspense fallback={<p>Loading</p>}>
         <Other></Other>
-      </Suspense>
+      </Suspense> */}
     </div>
   );
 }
