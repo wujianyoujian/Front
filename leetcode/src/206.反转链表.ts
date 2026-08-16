@@ -33,13 +33,44 @@ function reverseList(head: ListNode | null): ListNode | null {
   // return pre;
   // 2. 递归法
   // 1 -> 2 -> 3 -> 4 -> 5 -> null
-  if (head == null || head?.next == null) return head;
+  // if (head == null || head?.next == null) return head;
+  // const newHead = reverseList(head.next);
+  // head.next.next = head;
+  // head.next = null;
+  // return newHead;
+  // 1 -> 2 -> 3 -> 4 -> 5 -> null
+  // 1 -> null 2 -> 3
+  // let pre = null;
+  // let cur = head;
+  // while (cur) {
+  //   let temp = cur?.next;
+  //   cur.next = pre;
+  //   pre = cur;
+  //   cur = temp;
+  // }
+  // return pre;
+  // if (head == null || head.next == null) {
+  //   return head;
+  // }
+  // const newHead = reverseList(head.next);
+  // head.next.next = head;
+  // head.next = null;
+  // return newHead;
+  // 1 -> 2 -> 3 -> 4
 
-  const newHead = reverseList(head.next);
+  // 1 -> null  2 -> 3 -> 4
 
-  head.next.next = head;
-  head.next = null;
-  return newHead;
+  // null <- 1 <- 2  3 -> 4
+  let pre = null;
+  let cur = head;
+
+  while (cur !== null) {
+    let temp = cur.next;
+    cur.next = pre;
+    pre = cur;
+    cur = temp;
+  }
+  return pre;
 }
 // @lc code=end
 

@@ -9,15 +9,31 @@
  Do not return anything, modify nums in-place instead.
  */
 function moveZeroes(nums: number[]): void {
-  let slowIndex = 0;
-  let fastIndex = 0;
-  let defaultValue = 0;
+  // let slowIndex = 0;
+  // let fastIndex = 0;
+  // let defaultValue = 0;
 
-  for (; fastIndex < nums.length; fastIndex++) {
-    if (defaultValue !== nums[fastIndex]) {
+  // for (; fastIndex < nums.length; fastIndex++) {
+  //   if (defaultValue !== nums[fastIndex]) {
+  //     nums[slowIndex] = nums[fastIndex];
+  //     slowIndex++;
+  //   }
+  // }
+
+  // for (let i = slowIndex; i < nums.length; i++) {
+  //   nums[i] = 0;
+  // }
+
+  let defaultValue = 0;
+  let fastIndex = 0;
+  let slowIndex = 0;
+
+  for (; fastIndex < nums.length; ) {
+    if (defaultValue != nums[fastIndex]) {
       nums[slowIndex] = nums[fastIndex];
       slowIndex++;
     }
+    fastIndex++;
   }
 
   for (let i = slowIndex; i < nums.length; i++) {

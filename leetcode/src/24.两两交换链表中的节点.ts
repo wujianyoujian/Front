@@ -42,36 +42,69 @@ function swapPairs(head: ListNode | null): ListNode | null {
   //   cur = cur.next!.next;
   // }
   // return dummyNode.next;
-
   // const dummy = new ListNode(0);
   // dummy.next = head;
   // let pre = dummy;
-
   // while (pre && pre.next && pre.next.next) {
   //   let first = pre.next;
   //   let second = first.next;
-
   //   first.next = second?.next;
   //   second.next = first;
   //   pre.next = second;
-
   //   pre = first;
   // }
   // return dummy.next;
-
+  // 1 -> 2 -> 3 -> 4
+  // 2 -> 1 -> 3 -> 4
+  // let dump = new ListNode(0);
+  // dump.next = head;
+  // let cur = dump;
+  // while (cur && cur.next && cur.next.next) {
+  //   let first = cur.next;
+  //   let second = first.next;
+  //   first.next = second?.next;
+  //   second.next = first;
+  //   cur.next = second;
+  //   cur = first;
+  // }
+  // return dump.next;
   // 递归版
+  // if (head == null || head.next == null) {
+  //   return head;
+  // }
+  // let first = head;
+  // let second = head.next;
+  // first.next = swapPairs(second.next);
+  // second.next = first;
+  // return second;
+  // if (head == null || head.next == null) {
+  //   return head;
+  // }
+  // let first = head;
+  // let second = head.next;
+  // first.next = swapPairs(second.next);
+  // second.next = first;
+  // return second;
 
-  if (head == null || head.next == null) {
-    return head;
+  //(0) 1 -> 2 -> 3 -> 4 -> 5
+
+  //(0) 2 -> 1 -> 3 -> 4 -> 5
+
+  let dummpy = new ListNode(0);
+  dummpy.next = head;
+
+  let pre = dummpy;
+  while (pre != null && pre.next != null && pre.next.next !== null) {
+    let first = pre.next;
+    let second = first.next;
+
+    first.next = second?.next;
+    second?.next = first;
+
+    pre.next = second;
+    pre = first;
   }
-
-  let first = head;
-  let second = head.next;
-
-  first.next = swapPairs(second.next);
-  second.next = first;
-
-  return second;
+  return dummpy.next;
 }
 // @lc code=end
 swapPairs(createNodeList([1, 2, 3, 4, 5, 7]));

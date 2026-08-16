@@ -6,6 +6,36 @@
 
 // @lc code=start
 function threeSum(nums: number[]): number[][] {
+  // let result = [];
+  // nums.sort((a, b) => a - b);
+
+  // for (let i = 0; i < nums.length; i++) {
+  //   let left = i + 1;
+  //   let right = nums.length - 1;
+
+  //   if (nums[i] === nums[i - 1] && i > 0) {
+  //     continue;
+  //   }
+
+  //   while (left < right) {
+  //     const sum = nums[i] + nums[left] + nums[right];
+
+  //     if (sum === 0) {
+  //       result.push([nums[i], nums[left], nums[right]]);
+  //       left++;
+  //       right--;
+  //       while (left < right && nums[left] === nums[left - 1]) left++;
+  //       while (left < right && nums[right] === nums[right + 1]) right--;
+  //     } else if (sum > 0) {
+  //       right--;
+  //     } else if (sum < 0) {
+  //       left++;
+  //     }
+  //   }
+  // }
+
+  // return result;
+
   let result = [];
   nums.sort((a, b) => a - b);
 
@@ -18,17 +48,17 @@ function threeSum(nums: number[]): number[][] {
     }
 
     while (left < right) {
-      const sum = nums[i] + nums[left] + nums[right];
-
-      if (sum === 0) {
+      const target = nums[i] + nums[left] + nums[right];
+      if (target === 0) {
         result.push([nums[i], nums[left], nums[right]]);
         left++;
         right--;
+
         while (left < right && nums[left] === nums[left - 1]) left++;
         while (left < right && nums[right] === nums[right + 1]) right--;
-      } else if (sum > 0) {
+      } else if (target > 0) {
         right--;
-      } else if (sum < 0) {
+      } else {
         left++;
       }
     }

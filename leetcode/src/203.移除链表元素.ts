@@ -45,7 +45,7 @@ function removeElements(head: ListNode | null, val: number): ListNode | null {
   // 伪造 虚拟头节点
   // let dummyNode = new ListNode();
   // dummyNode.next = head;
-  // let cur: ListNode | null = dummyNode;
+  // let cur: ListNode | nu                                                                             ll = dummyNode;
   // while (cur) {
   //   if (cur.next?.val == val) {
   //     cur.next = cur.next.next;
@@ -57,11 +57,10 @@ function removeElements(head: ListNode | null, val: number): ListNode | null {
 
   // 递归
   if (head == null) {
-    return null;
+    return head;
   }
-
-  head.next = removeElements(head?.next, val);
-  if (head?.val == val) {
+  head.next = removeElements(head.next, val);
+  if (head.val == val) {
     return head.next;
   }
   return head;

@@ -44,20 +44,39 @@ function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
   //   }
   //   return dummy.next;
   // 双指针
-  const dummy = new ListNode();
-  dummy.next = head;
-  let fast = dummy;
-  let slow = dummy;
-  for (let i = 0; i < n + 1; i++) {
-    fast = fast?.next;
-  }
-  while (fast) {
-    fast = fast.next;
-    slow = slow?.next;
-  }
-  slow.next = slow.next?.next;
+  // let dump = new ListNode(0);
+  // dump.next = head;
+  // let slow = dump;
+  // let fast = dump;
 
-  return dummy.next;
+  // for (let i = 0; i < n + 1; i++) {
+  //   fast = fast?.next;
+  // }
+
+  // while (fast !== null) {
+  //   fast = fast?.next;
+  //   slow = slow?.next;
+  // }
+
+  // slow!.next = slow!.next!.next;
+  // return dump.next;
+
+  let dummp = new ListNode(0);
+  dummp.next = head;
+  let slow = dummp;
+  let fast = dummp;
+
+  for (let i = 0; i < n + 1; i++) {
+    fast = fast.next;
+  }
+
+  while (fast != null) {
+    fast = fast.next;
+    slow = slow.next;
+  }
+
+  slow.next = slow.next?.next;
+  return dummp.next;
 }
 // @lc code=end
 

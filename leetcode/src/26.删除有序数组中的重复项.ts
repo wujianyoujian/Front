@@ -18,11 +18,22 @@ function removeDuplicates(nums: number[]): number {
   //   }
   // })
   // return nums.slice(0, key).length
-  let fastIndex = 0;
+  // let fastIndex = 0;
+  // let slowIndex = 0;
+
+  // for (; fastIndex < nums.length; fastIndex++) {
+  //   if (nums[fastIndex] !== nums[slowIndex]) {
+  //     slowIndex++;
+  //     nums[slowIndex] = nums[fastIndex];
+  //   }
+  // }
+  // return slowIndex + 1;
+
   let slowIndex = 0;
+  let fastIndex = 0;
 
   for (; fastIndex < nums.length; fastIndex++) {
-    if (nums[fastIndex] !== nums[slowIndex]) {
+    if (nums[fastIndex] != nums[slowIndex]) {
       slowIndex++;
       nums[slowIndex] = nums[fastIndex];
     }

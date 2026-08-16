@@ -12,6 +12,7 @@
 - 2. React 的 Diff 算法原理是什么？key 的作用是什么？✅ 2026-05-21 00:00 59分
 
   **答：** 不知道。Diff 算法通过三个启发式假设将 O(n³) 降为 O(n)：①同层比较，跨层级节点直接删除重建；②不同类型组件直接销毁重建；③同级节点用 key 标识复用。key 的作用是让 React 识别列表中哪个节点是哪个，避免顺序变化时全量更新。不能用 index 作 key，会导致顺序变化时状态错乱，应用业务 id。
+  
 - 3. React Fiber 架构是什么？解决了什么问题？时间切片和可中断渲染是如何实现的？✅ 2026-05-24 00:00 59分
 
   **答：** 双向链表结构（纠正：是单向链表，三个指针 child/sibling/return），可中断不了解。Fiber 是 React 16 重写的协调引擎，每个组件对应一个 fiber 节点（JS 对象）。解决了 React 15 Stack Reconciler 递归同步遍历无法中断导致主线程卡顿的问题。可中断原理：把递归改成循环+链表，每处理完一个 fiber 检查剩余时间，不够则暂停让出主线程，用 MessageChannel 模拟 requestIdleCallback 实现时间切片（每片约 5ms）。还维护 current/workInProgress 双缓冲树，构建完成后 commit 阶段一次性切换。
