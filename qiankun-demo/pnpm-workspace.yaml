@@ -1,0 +1,4 @@
+packages:
+  - 'main'
+  - 'vue-app'
+  - 'react-app'

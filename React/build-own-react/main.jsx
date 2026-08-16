@@ -1,5 +1,6 @@
 import MReact from "./libs/MReact";
-import App from "./App";
+// import App from "./App";
+import Test from "./src/Test";
 
 const container = document.getElementById("root");
-MReact.render(<App />, container);
+MReact.render(<Test />, container);

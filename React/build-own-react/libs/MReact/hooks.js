@@ -15,6 +15,7 @@ import {
 function useReducer(reducer, initialArg, initial) {
   const oldHook = getCurrentHook();
 
+  // 更新逻辑
   if (oldHook) {
     const hook = {
       state: oldHook.state,
@@ -34,6 +35,7 @@ function useReducer(reducer, initialArg, initial) {
     return [hook.state, queue.dispatch];
   }
 
+  // 初次执行
   const initialState = oldHook
     ? oldHook.state
     : typeof initial == "function"
